@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<notes>
+    <note>
+        <title>shopping list</title>
+        <body>vegetables, fruits, other products
+            bags, napkins, washing powder
+            juice, water, drinks
+        </body>
+        <created>2021-05-12</created>
+    </note>
+    <note>
+        <title>android homework</title>
+        <body>continue to do task 6
+            until tomorrow!!!
+        </body>
+        <created>2021-05-11</created>
+    </note>
+    <note>
+        <title>bus schedule</title>
+        <body>6:40
+            7:55
+            9:05
+            10:15
+            11:25
+            13:35
+            14:45
+            15:55
+            17:00
+        </body>
+        <created>2021-03-01</created>
+    </note>
+</notes>

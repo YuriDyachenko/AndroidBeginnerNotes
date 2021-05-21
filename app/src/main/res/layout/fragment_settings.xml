@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:alpha="@dimen/settings_alpha"
+    android:background="@color/fragment_header_background"
+    tools:context=".SettingsFragment">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/about_background"
+        android:orientation="vertical"
+        android:padding="@dimen/settings_padding"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <CheckBox
+            android:id="@+id/edit_note_via_popup_checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/edit_note_via_popup_menu"
+            android:textColor="@color/purple_700"
+            android:textSize="@dimen/settings_text_size" />
+
+        <Button
+            android:id="@+id/settings_apply_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/settings_padding"
+            android:text="@string/apply" />
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

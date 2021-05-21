@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="FragmentHeader">
+        <item name="android:padding">@dimen/fragment_header_padding</item>
+        <item name="android:textSize">@dimen/fragment_header_text_size</item>
+        <item name="android:background">@color/fragment_header_background</item>
+        <item name="android:textColor">@color/purple_700</item>
+    </style>
+
+    <dimen name="fragment_header_padding">10dp</dimen>
+    <dimen name="fragment_header_text_size">36sp</dimen>
+</resources>

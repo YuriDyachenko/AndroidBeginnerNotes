@@ -1,0 +1,2 @@
+rootProject.name = "AndroidBeginnerNotes"
+include ':app'
