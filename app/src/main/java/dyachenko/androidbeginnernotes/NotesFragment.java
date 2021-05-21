@@ -1,6 +1,5 @@
 package dyachenko.androidbeginnernotes;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -8,19 +7,18 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
-import java.util.Objects;
 
 public class NotesFragment extends Fragment {
 
@@ -34,35 +32,29 @@ public class NotesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         setHasOptionsMenu(true);
-        return inflater.inflate(R.layout.fragment_notes, container, false);
+        View view = inflater.inflate(R.layout.fragment_notes, container, false);
+        initRecyclerView(view);
+        return view;
+    }
+
+    private void initRecyclerView(View view) {
+        RecyclerView recyclerView = view.findViewById(R.id.recycler_view_lines);
+        recyclerView.setHasFixedSize(true);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(layoutManager);
+        NotesAdapter adapter = new NotesAdapter();
+        recyclerView.setAdapter(adapter);
+
+        adapter.setOnItemClickListener((view1, index) -> {
+            position = index;
+            showNoteDetails();
+        });
     }
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         fillNotes();
-        initList(view);
-    }
-
-    private void initList(View view) {
-        LinearLayout layout = (LinearLayout) view;
-        Context context = getContext();
-        for (int i = 0; i < Notes.NOTE_STORAGE.size(); i++) {
-            Note note = Notes.NOTE_STORAGE.get(i);
-            TextView textView = new TextView(context);
-            textView.setText(note.getNumberedTitle(i));
-            textView.setTextSize(24);
-            textView.setPadding(20, 20, 20, 20);
-            textView.setTextColor(getResources().getColor(R.color.teal_700, Objects.requireNonNull(context).getTheme()));
-
-            final int index = i;
-            textView.setOnClickListener(v -> {
-                position = index;
-                showNoteDetails();
-            });
-
-            layout.addView(textView);
-        }
     }
 
     @Override
