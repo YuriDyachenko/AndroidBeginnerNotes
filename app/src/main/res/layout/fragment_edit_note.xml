@@ -1,0 +1,105 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="@dimen/edit_whole_padding"
+    android:alpha="@dimen/settings_alpha"
+    android:background="@color/about_background"
+    tools:context=".SettingsFragment">
+
+    <TextView
+        android:id="@+id/hint_title_text_view"
+        style="@style/EditHintStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:labelFor="@id/title_edit_text"
+        android:text="@string/hint_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/title_edit_text"
+        style="@style/EditFieldStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:autofillHints="@string/hint_title"
+        android:inputType="textCapSentences|textMultiLine"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/hint_title_text_view" />
+
+    <TextView
+        android:id="@+id/hint_body_text_view"
+        style="@style/EditHintStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:labelFor="@id/body_edit_text"
+        android:text="@string/hint_body"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/title_edit_text" />
+
+    <EditText
+        android:id="@+id/body_edit_text"
+        style="@style/EditFieldStyle"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:autofillHints="@string/hint_body"
+        android:ems="10"
+        android:gravity="start|top"
+        android:inputType="textMultiLine"
+        app:layout_constraintBottom_toTopOf="@+id/hint_created_text_view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/hint_body_text_view" />
+
+    <TextView
+        android:id="@+id/hint_created_text_view"
+        style="@style/EditHintStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:labelFor="@id/created_linear"
+        android:text="@string/hint_created"
+        app:layout_constraintBottom_toTopOf="@+id/created_linear"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/created_linear"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/save_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <TextView
+            android:id="@+id/created_text_view"
+            style="@style/EditFieldStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical" />
+
+        <Button
+            android:id="@+id/created_change_button"
+            android:layout_width="@dimen/change_button_width"
+            android:layout_height="match_parent"
+            android:backgroundTint="@color/fragment_header_background"
+            android:text="@string/change_text"
+            android:textColor="@color/purple_700" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/save_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/fragment_header_padding"
+        android:text="@string/save_changes"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

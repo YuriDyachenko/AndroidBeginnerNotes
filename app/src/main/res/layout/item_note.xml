@@ -24,7 +24,6 @@
             android:ellipsize="end"
             android:lines="@dimen/item_title_lines"
             android:padding="@dimen/item_padding"
-            android:text="@string/empty_text_sample"
             android:textColor="@color/purple_700"
             android:textSize="@dimen/item_title_text_size" />
 
@@ -35,7 +34,6 @@
             android:ellipsize="end"
             android:lines="@dimen/item_body_lines"
             android:padding="@dimen/item_body_padding"
-            android:text="@string/note_body"
             android:textSize="@dimen/item_body_text_size" />
 
         <TextView
@@ -43,7 +41,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="@dimen/item_body_padding"
-            android:text="@string/note_created"
             android:textAlignment="textEnd"
             android:textSize="@dimen/item_created_text_size" />
 

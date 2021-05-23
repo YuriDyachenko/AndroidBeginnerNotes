@@ -33,8 +33,8 @@ public class MainActivity extends AppCompatActivity {
     private void readSettings() {
         SharedPreferences sharedPreferences = getSharedPreferences(Settings.PREFERENCE_NAME,
                 Context.MODE_PRIVATE);
-        Settings.editNoteViaPopupMenu = sharedPreferences
-                .getBoolean(Settings.EDIT_NOTE_VIA_POPUP_MENU, false);
+        Settings.editNoteViaEditor = sharedPreferences
+                .getBoolean(Settings.EDIT_NOTE_VIA_EDITOR, false);
     }
 
     private void initViews() {

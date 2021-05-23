@@ -12,7 +12,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -73,7 +72,9 @@ public class NotesFragment extends Fragment {
     private void showNoteDetails() {
         requireActivity().getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.notes_fragment_container, NoteFragment.newInstance(position))
+                .replace(R.id.notes_fragment_container, Settings.editNoteViaEditor
+                        ? EditNoteFragment.newInstance(position)
+                        : NoteFragment.newInstance(position))
                 .addToBackStack(null)
                 .commit();
     }

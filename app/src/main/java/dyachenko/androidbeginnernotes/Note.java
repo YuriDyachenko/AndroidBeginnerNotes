@@ -45,12 +45,12 @@ public class Note implements Serializable {
     }
 
     public String getCreatedString() {
-        return "created: " + new SimpleDateFormat("dd.MM.yyyy", Locale.US).format(getCreated());
+        return getCreatedString(getCreated());
     }
 
     public void setCreatedFromString(String stringDate) {
         try {
-            this.created = new SimpleDateFormat("yyyy-MM-dd", Locale.US).parse(stringDate);
+            this.created = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(stringDate);
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -58,5 +58,9 @@ public class Note implements Serializable {
 
     public void setCreated(Date created) {
         this.created = created;
+    }
+
+    public static String getCreatedString(Date created) {
+        return "created: " + new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(created);
     }
 }
