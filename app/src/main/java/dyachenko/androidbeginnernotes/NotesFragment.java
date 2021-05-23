@@ -40,8 +40,6 @@ public class NotesFragment extends Fragment {
     private void initRecyclerView(View view) {
         RecyclerView recyclerView = view.findViewById(R.id.recycler_view_lines);
         recyclerView.setHasFixedSize(true);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
-        recyclerView.setLayoutManager(layoutManager);
         NotesAdapter adapter = new NotesAdapter();
         recyclerView.setAdapter(adapter);
 

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="spam_count" format="integer" type="dimen">2</item>
+    <item name="item_body_lines" format="integer" type="dimen">2</item>
+</resources>

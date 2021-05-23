@@ -19,4 +19,5 @@
     <string name="edit_note_body">Edit note body</string>
     <string name="edit_note_title">Edit note title</string>
     <string name="in_developing">In developing…</string>
+    <string name="empty_text_sample">Empty TEXT sample</string>
 </resources>
