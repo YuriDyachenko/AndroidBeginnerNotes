@@ -61,6 +61,6 @@ public class Note implements Serializable {
     }
 
     public static String getCreatedString(Date created) {
-        return "created: " + new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(created);
+        return new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(created);
     }
 }
