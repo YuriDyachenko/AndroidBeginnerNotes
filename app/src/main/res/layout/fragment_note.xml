@@ -7,7 +7,7 @@
     tools:context=".NoteFragment">
 
     <TextView
-        style="@style/FragmentHeader"
+        style="@style/FragmentHeaderStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/note_details" />
@@ -17,7 +17,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/fragment_header_padding"
-        android:text="@string/note_title"
         android:textColor="@color/teal_700"
         android:textSize="@dimen/title_text_size" />
 
@@ -31,7 +30,6 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:padding="@dimen/fragment_header_padding"
-            android:text="@string/note_created"
             android:textSize="@dimen/created_text_size" />
 
         <Button
@@ -52,7 +50,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="@dimen/fragment_header_padding"
-            android:text="@string/note_body"
             android:textColor="@color/purple_500"
             android:textSize="@dimen/body_text_size" />
     </ScrollView>

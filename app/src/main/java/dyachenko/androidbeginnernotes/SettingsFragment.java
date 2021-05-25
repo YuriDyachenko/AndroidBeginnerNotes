@@ -24,10 +24,10 @@ public class SettingsFragment extends Fragment {
 
     private void initViews(View view) {
         CheckBox checkBox = view.findViewById(R.id.edit_note_via_popup_checkbox);
-        checkBox.setChecked(Settings.editNoteViaPopupMenu);
+        checkBox.setChecked(Settings.editNoteViaEditor);
 
         view.findViewById(R.id.settings_apply_button).setOnClickListener(v -> {
-            Settings.editNoteViaPopupMenu = checkBox.isChecked();
+            Settings.editNoteViaEditor = checkBox.isChecked();
             writeSettings();
             requireActivity().getSupportFragmentManager().popBackStack();
         });
@@ -36,7 +36,7 @@ public class SettingsFragment extends Fragment {
     private void writeSettings() {
         requireActivity().getSharedPreferences(Settings.PREFERENCE_NAME, Context.MODE_PRIVATE)
                 .edit()
-                .putBoolean(Settings.EDIT_NOTE_VIA_POPUP_MENU, Settings.editNoteViaPopupMenu)
+                .putBoolean(Settings.EDIT_NOTE_VIA_EDITOR, Settings.editNoteViaEditor)
                 .apply();
     }
 }

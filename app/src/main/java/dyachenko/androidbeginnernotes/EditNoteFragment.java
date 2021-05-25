@@ -5,28 +5,32 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 
 import java.util.Calendar;
 
-public class NoteFragment extends Fragment {
+import static dyachenko.androidbeginnernotes.NoteFragment.ARG_NOTE_INDEX;
 
-    public static final String ARG_NOTE_INDEX = "ARG_NOTE_INDEX";
+public class EditNoteFragment extends Fragment {
+    private Note note;
     private int noteIndex;
+    private EditText titleEditText;
+    private EditText bodyEditText;
     private TextView createdTextView;
     private final Calendar calendar = Calendar.getInstance();
 
-    public NoteFragment() {
+    public EditNoteFragment() {
     }
 
-    public static NoteFragment newInstance(int noteIndex) {
-        NoteFragment noteFragment = new NoteFragment();
-        Bundle bundle = new Bundle();
-        bundle.putInt(ARG_NOTE_INDEX, noteIndex);
-        noteFragment.setArguments(bundle);
-        return noteFragment;
+    public static EditNoteFragment newInstance(int noteIndex) {
+        EditNoteFragment fragment = new EditNoteFragment();
+        Bundle args = new Bundle();
+        args.putInt(ARG_NOTE_INDEX, noteIndex);
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
@@ -41,41 +45,48 @@ public class NoteFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_note, container, false);
+        View view = inflater.inflate(R.layout.fragment_edit_note, container, false);
         initViews(view);
         return view;
     }
 
     private void initViews(View view) {
         if (noteIndex < Notes.NOTE_STORAGE.size()) {
-            Note note = Notes.NOTE_STORAGE.get(noteIndex);
+            note = Notes.NOTE_STORAGE.get(noteIndex);
 
-            TextView titleTextView = view.findViewById(R.id.title_text_view);
-            titleTextView.setText(note.getTitle());
+            titleEditText = view.findViewById(R.id.title_edit_text);
+            titleEditText.setText(note.getTitle());
 
-            TextView bodyTextView = view.findViewById(R.id.body_text_view);
-            bodyTextView.setText(note.getBody());
+            bodyEditText = view.findViewById(R.id.body_edit_text);
+            bodyEditText.setText(note.getBody());
 
             createdTextView = view.findViewById(R.id.created_text_view);
             createdTextView.setText(note.getCreatedString());
+            calendar.setTime(note.getCreated());
 
-            view.findViewById(R.id.created_change_button)
-                    .setOnClickListener(v -> changeNoteCreated());
+            view.findViewById(R.id.created_change_button).setOnClickListener(v -> changeNoteCreated());
+
+            view.findViewById(R.id.save_button).setOnClickListener(v -> {
+                saveChanges();
+                requireActivity().getSupportFragmentManager().popBackStack();
+            });
         }
     }
 
-    private void changeNoteCreated() {
-        Note note = Notes.NOTE_STORAGE.get(noteIndex);
+    private void saveChanges() {
+        note.setTitle(titleEditText.getText().toString());
+        note.setBody(bodyEditText.getText().toString());
+        note.setCreated(calendar.getTime());
+    }
 
+    private void changeNoteCreated() {
         DatePickerDialog.OnDateSetListener listener = (view, year, month, dayOfMonth) -> {
             calendar.set(Calendar.YEAR, year);
             calendar.set(Calendar.MONTH, month);
             calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-            note.setCreated(calendar.getTime());
-            createdTextView.setText(note.getCreatedString());
+            createdTextView.setText(Note.getCreatedString(calendar.getTime()));
         };
 
-        calendar.setTime(note.getCreated());
         new DatePickerDialog(requireContext(), listener, calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH))
                 .show();

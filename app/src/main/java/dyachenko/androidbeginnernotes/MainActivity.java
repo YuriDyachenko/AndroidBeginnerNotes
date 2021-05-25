@@ -26,15 +26,20 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         readSettings();
+        fillNotes();
         initViews();
         initStartFragment(savedInstanceState);
+    }
+
+    private void fillNotes() {
+        Notes.fillFromXml(getResources().getXml(R.xml.notes));
     }
 
     private void readSettings() {
         SharedPreferences sharedPreferences = getSharedPreferences(Settings.PREFERENCE_NAME,
                 Context.MODE_PRIVATE);
-        Settings.editNoteViaPopupMenu = sharedPreferences
-                .getBoolean(Settings.EDIT_NOTE_VIA_POPUP_MENU, false);
+        Settings.editNoteViaEditor = sharedPreferences
+                .getBoolean(Settings.EDIT_NOTE_VIA_EDITOR, false);
     }
 
     private void initViews() {
