@@ -1,5 +1,7 @@
 package dyachenko.androidbeginnernotes;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -10,14 +12,20 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import static dyachenko.androidbeginnernotes.NoteFragment.ARG_NOTE_INDEX;
+
 public class NotesFragment extends Fragment {
 
-    private static final String EXTRA_POSITION = "EXTRA_POSITION";
+    private static final String extraPositionKey = "EXTRA_POSITION";
+    private static final int addNoteRequestCode = 1;
     private int position;
+    private RecyclerView recyclerView;
+    private NotesAdapter adapter;
 
     public NotesFragment() {
     }
@@ -32,9 +40,9 @@ public class NotesFragment extends Fragment {
     }
 
     private void initRecyclerView(View view) {
-        RecyclerView recyclerView = view.findViewById(R.id.recycler_view_lines);
+        recyclerView = view.findViewById(R.id.recycler_view_lines);
         recyclerView.setHasFixedSize(true);
-        NotesAdapter adapter = new NotesAdapter();
+        adapter = new NotesAdapter();
         recyclerView.setAdapter(adapter);
 
         adapter.setOnItemClickListener((view1, index) -> {
@@ -50,7 +58,7 @@ public class NotesFragment extends Fragment {
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        outState.putInt(EXTRA_POSITION, position);
+        outState.putInt(extraPositionKey, position);
         super.onSaveInstanceState(outState);
     }
 
@@ -59,7 +67,7 @@ public class NotesFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         if (savedInstanceState != null) {
-            position = savedInstanceState.getInt(EXTRA_POSITION);
+            position = savedInstanceState.getInt(extraPositionKey);
         }
     }
 
@@ -73,9 +81,41 @@ public class NotesFragment extends Fragment {
                 .commit();
     }
 
+    private void addNote() {
+        EditNoteFragment editNoteFragment = EditNoteFragment.newInstance(-1);
+        editNoteFragment.setTargetFragment(this, addNoteRequestCode);
+        requireActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.notes_fragment_container, editNoteFragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
+    private void deleteAllNotes() {
+        if (!Notes.NOTE_STORAGE.isEmpty()) {
+            Notes.NOTE_STORAGE.clear();
+            adapter.notifyDataSetChanged();
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode != addNoteRequestCode) {
+            super.onActivityResult(requestCode, resultCode, data);
+            return;
+        }
+        if (resultCode == Activity.RESULT_OK) {
+            if (data != null) {
+                position = data.getIntExtra(ARG_NOTE_INDEX, 0);
+                adapter.notifyItemInserted(position);
+                recyclerView.scrollToPosition(position);
+            }
+        }
+    }
+
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        requireActivity().getMenuInflater().inflate(R.menu.menu_search, menu);
+        requireActivity().getMenuInflater().inflate(R.menu.menu_notes, menu);
 
         MenuItem searchItem = menu.findItem(R.id.action_search);
         SearchView searchView = (SearchView) searchItem.getActionView();
@@ -100,5 +140,25 @@ public class NotesFragment extends Fragment {
         });
 
         super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (doAction(item.getItemId())) {
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private boolean doAction(int id) {
+        if (id == R.id.action_add_note) {
+            addNote();
+            return true;
+        }
+        if (id == R.id.action_clear) {
+            deleteAllNotes();
+            return true;
+        }
+        return false;
     }
 }

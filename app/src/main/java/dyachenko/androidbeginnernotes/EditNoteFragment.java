@@ -1,10 +1,13 @@
 package dyachenko.androidbeginnernotes;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -52,21 +55,27 @@ public class EditNoteFragment extends Fragment {
 
     private void initViews(View view) {
         if (noteIndex < Notes.NOTE_STORAGE.size()) {
-            note = Notes.NOTE_STORAGE.get(noteIndex);
-
             titleEditText = view.findViewById(R.id.title_edit_text);
-            titleEditText.setText(note.getTitle());
-
             bodyEditText = view.findViewById(R.id.body_edit_text);
-            bodyEditText.setText(note.getBody());
-
             createdTextView = view.findViewById(R.id.created_text_view);
-            createdTextView.setText(note.getCreatedString());
-            calendar.setTime(note.getCreated());
+            Button saveChangesButton = view.findViewById(R.id.save_button);
+            if (noteIndex == -1) {
+                note = null;
+                titleEditText.setText("");
+                bodyEditText.setText("");
+                createdTextView.setText(Note.getCreatedString(calendar.getTime()));
+                saveChangesButton.setText(R.string.action_add_note);
+            } else {
+                note = Notes.NOTE_STORAGE.get(noteIndex);
+                titleEditText.setText(note.getTitle());
+                bodyEditText.setText(note.getBody());
+                createdTextView.setText(note.getCreatedString());
+                calendar.setTime(note.getCreated());
+            }
 
             view.findViewById(R.id.created_change_button).setOnClickListener(v -> changeNoteCreated());
 
-            view.findViewById(R.id.save_button).setOnClickListener(v -> {
+            saveChangesButton.setOnClickListener(v -> {
                 saveChanges();
                 requireActivity().getSupportFragmentManager().popBackStack();
             });
@@ -74,9 +83,22 @@ public class EditNoteFragment extends Fragment {
     }
 
     private void saveChanges() {
+        if (noteIndex == -1) {
+            note = new Note();
+        }
         note.setTitle(titleEditText.getText().toString());
         note.setBody(bodyEditText.getText().toString());
         note.setCreated(calendar.getTime());
+        if (noteIndex == -1) {
+            Notes.NOTE_STORAGE.add(note);
+            noteIndex = Notes.NOTE_STORAGE.size() - 1;
+            Fragment targetFragment = getTargetFragment();
+            if (targetFragment != null) {
+                Intent data = new Intent();
+                data.putExtra(ARG_NOTE_INDEX, noteIndex);
+                targetFragment.onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, data);
+            }
+        }
     }
 
     private void changeNoteCreated() {

@@ -12,6 +12,7 @@ public class Note implements Serializable {
     private Date created;
 
     public Note() {
+
     }
 
     public Note(String title, String body, String created) {
