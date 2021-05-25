@@ -26,8 +26,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         readSettings();
+        fillNotes();
         initViews();
         initStartFragment(savedInstanceState);
+    }
+
+    private void fillNotes() {
+        Notes.fillFromXml(getResources().getXml(R.xml.notes));
     }
 
     private void readSettings() {

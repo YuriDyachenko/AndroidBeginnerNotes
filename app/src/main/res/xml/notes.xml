@@ -1,64 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <notes>
-    <note>
-        <title>shopping list</title>
-        <body>vegetables, fruits, other products
-            bags, napkins, washing powder
-            juice, water, drinks
-        </body>
-        <created>2021-05-12</created>
-    </note>
-    <note>
-        <title>android homework</title>
-        <body>continue to do task 6
-            until tomorrow!!!
-            DONE
-        </body>
-        <created>2021-05-11</created>
-    </note>
-    <note>
-        <title>bus schedule</title>
-        <body>6:40
-            7:55
-            9:05
-            10:15
-            11:25
-            13:35
-            14:45
-            15:55
-            17:00
-        </body>
-        <created>2021-03-01</created>
-    </note>
-    <note>
-        <title>android homework 8 - very long title to show multiline property</title>
-        <body>to do
-            to do
-            to do
-            DONE 23.05.2021
-        </body>
-        <created>2021-05-21</created>
-    </note>
-    <note>
-        <title>memory for notebook</title>
-        <body>to
-            buy
-            urgently!!!
-        </body>
-        <created>2021-05-20</created>
-    </note>
-    <note>
-        <title>health</title>
-        <body>to cure
-            teeth
-        </body>
-        <created>2021-05-19</created>
-    </note>
-    <note>
-        <title>wife</title>
-        <body>to apologize
-            to buy flowers
-        </body>
-        <created>2021-05-21</created>
-    </note>
+    <note
+        body="vegetables, fruits, other products\n
+            bags, napkins, washing powder\n
+            juice, water, drinks"
+        created="2021-05-12"
+        title="shopping list" />
+    <note
+        body="continue to do task 6\n
+            until tomorrow!!!\n
+            DONE"
+        created="2021-05-11"
+        title="android homework" />
+    <note
+        body="6:40\n
+            7:55\n
+            9:05\n
+            10:15\n
+            11:25\n
+            13:35\n
+            14:45\n
+            15:55\n
+            17:00\n"
+        created="2021-03-01"
+        title="bus schedule" />
+    <note
+        body="to do\n
+            to do\n
+            to do\n
+            DONE 23.05.2021"
+        created="2021-05-21"
+        title="android homework 8 - very long title to show multiline property" />
+    <note
+        body="to\n
+            buy\n
+            urgently!!!"
+        created="2021-05-20"
+        title="memory for notebook" />
+    <note
+        body="to cure\n
+            teeth"
+        created="2021-05-19"
+        title="health" />
+    <note
+        body="to apologize\n
+            to buy flowers"
+        created="2021-05-21"
+        title="wife" />
 </notes>

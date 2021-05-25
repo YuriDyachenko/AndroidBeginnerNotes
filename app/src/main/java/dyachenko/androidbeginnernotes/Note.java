@@ -14,6 +14,12 @@ public class Note implements Serializable {
     public Note() {
     }
 
+    public Note(String title, String body, String created) {
+        setTitle(title);
+        setBody(body);
+        setCreatedFromString(created);
+    }
+
     public String getTitle() {
         return title;
     }
