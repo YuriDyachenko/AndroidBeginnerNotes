@@ -12,23 +12,26 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.Fragment;
 
 import com.google.android.material.navigation.NavigationView;
 
-import java.util.List;
-
 public class MainActivity extends AppCompatActivity {
+
+    private Navigation navigation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        initNavigation();
         readSettings();
         fillNotes();
         initViews();
         initStartFragment(savedInstanceState);
+    }
+
+    private void initNavigation() {
+        navigation = new Navigation(getSupportFragmentManager());
     }
 
     private void fillNotes() {
@@ -49,9 +52,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void initStartFragment(Bundle savedInstanceState) {
         if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.notes_fragment_container, new NotesFragment())
-                    .commit();
+            getNavigation().addFragment(new NotesFragment());
         }
     }
 
@@ -95,35 +96,17 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean doAction(int id) {
         if (id == R.id.action_about) {
-            addFragmentToBackStack(new AboutFragment());
+            getNavigation().addFragmentToBackStackOnce(new AboutFragment());
             return true;
         }
         if (id == R.id.action_settings) {
-            addFragmentToBackStack(new SettingsFragment());
+            getNavigation().addFragmentToBackStackOnce(new SettingsFragment());
             return true;
         }
         return false;
     }
 
-    private Fragment getVisibleFragment() {
-        List<Fragment> fragments = getSupportFragmentManager().getFragments();
-        for (int i = fragments.size() - 1; i >= 0; i--) {
-            Fragment fragment = fragments.get(i);
-            if (fragment.isVisible()) {
-                return fragment;
-            }
-        }
-        return null;
-    }
-
-    private void addFragmentToBackStack(Fragment fragment) {
-        Fragment visibleFragment = getVisibleFragment();
-        if (visibleFragment != null && visibleFragment.getClass() == fragment.getClass()) {
-            return;
-        }
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.notes_fragment_container, fragment)
-                .addToBackStack(null)
-                .commit();
+    public Navigation getNavigation() {
+        return navigation;
     }
 }

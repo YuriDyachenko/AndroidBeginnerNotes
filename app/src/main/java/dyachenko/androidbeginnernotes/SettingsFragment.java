@@ -7,9 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 
-import androidx.fragment.app.Fragment;
-
-public class SettingsFragment extends Fragment {
+public class SettingsFragment extends CommonFragment {
 
     public SettingsFragment() {
     }
@@ -29,7 +27,7 @@ public class SettingsFragment extends Fragment {
         view.findViewById(R.id.settings_apply_button).setOnClickListener(v -> {
             Settings.editNoteViaEditor = checkBox.isChecked();
             writeSettings();
-            requireActivity().getSupportFragmentManager().popBackStack();
+            navigation.popBackStack();
         });
     }
 

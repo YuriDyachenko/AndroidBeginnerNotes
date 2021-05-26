@@ -14,16 +14,16 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import static dyachenko.androidbeginnernotes.NoteFragment.ARG_NOTE_INDEX;
 
-public class NotesFragment extends Fragment {
+public class NotesFragment extends CommonFragment {
 
     private static final String extraPositionKey = "EXTRA_POSITION";
     private static final int addNoteRequestCode = 1;
     private int position;
+    private int positionToMove = -1;
     private RecyclerView recyclerView;
     private NotesAdapter adapter;
 
@@ -45,10 +45,19 @@ public class NotesFragment extends Fragment {
         adapter = new NotesAdapter();
         recyclerView.setAdapter(adapter);
 
+        moveToPosition();
+
         adapter.setOnItemClickListener((view1, index) -> {
             position = index;
             showNoteDetails();
         });
+    }
+
+    private void moveToPosition() {
+        if (positionToMove != -1) {
+            recyclerView.smoothScrollToPosition(positionToMove);
+            positionToMove = -1;
+        }
     }
 
     @Override
@@ -65,30 +74,21 @@ public class NotesFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
         if (savedInstanceState != null) {
             position = savedInstanceState.getInt(extraPositionKey);
         }
     }
 
     private void showNoteDetails() {
-        requireActivity().getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.notes_fragment_container, Settings.editNoteViaEditor
-                        ? EditNoteFragment.newInstance(position)
-                        : NoteFragment.newInstance(position))
-                .addToBackStack(null)
-                .commit();
+        navigation.addFragmentToBackStack(Settings.editNoteViaEditor
+                ? EditNoteFragment.newInstance(position)
+                : NoteFragment.newInstance(position));
     }
 
     private void addNote() {
         EditNoteFragment editNoteFragment = EditNoteFragment.newInstance(-1);
         editNoteFragment.setTargetFragment(this, addNoteRequestCode);
-        requireActivity().getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.notes_fragment_container, editNoteFragment)
-                .addToBackStack(null)
-                .commit();
+        navigation.addFragmentToBackStack(editNoteFragment);
     }
 
     private void deleteAllNotes() {
@@ -104,12 +104,9 @@ public class NotesFragment extends Fragment {
             super.onActivityResult(requestCode, resultCode, data);
             return;
         }
-        if (resultCode == Activity.RESULT_OK) {
-            if (data != null) {
-                position = data.getIntExtra(ARG_NOTE_INDEX, 0);
-                adapter.notifyItemInserted(position);
-                recyclerView.scrollToPosition(position);
-            }
+        if (resultCode == Activity.RESULT_OK && data != null) {
+            positionToMove = data.getIntExtra(ARG_NOTE_INDEX, 0);
+            adapter.notifyItemInserted(positionToMove);
         }
     }
 

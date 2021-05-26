@@ -17,7 +17,8 @@ import java.util.Calendar;
 
 import static dyachenko.androidbeginnernotes.NoteFragment.ARG_NOTE_INDEX;
 
-public class EditNoteFragment extends Fragment {
+public class EditNoteFragment extends CommonFragment {
+
     private Note note;
     private int noteIndex;
     private EditText titleEditText;
@@ -50,55 +51,64 @@ public class EditNoteFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_edit_note, container, false);
         initViews(view);
+        putDataToViews();
         return view;
     }
 
     private void initViews(View view) {
-        if (noteIndex < Notes.NOTE_STORAGE.size()) {
-            titleEditText = view.findViewById(R.id.title_edit_text);
-            bodyEditText = view.findViewById(R.id.body_edit_text);
-            createdTextView = view.findViewById(R.id.created_text_view);
-            Button saveChangesButton = view.findViewById(R.id.save_button);
-            if (noteIndex == -1) {
-                note = null;
-                titleEditText.setText("");
-                bodyEditText.setText("");
-                createdTextView.setText(Note.getCreatedString(calendar.getTime()));
-                saveChangesButton.setText(R.string.action_add_note);
-            } else {
-                note = Notes.NOTE_STORAGE.get(noteIndex);
-                titleEditText.setText(note.getTitle());
-                bodyEditText.setText(note.getBody());
-                createdTextView.setText(note.getCreatedString());
-                calendar.setTime(note.getCreated());
-            }
+        titleEditText = view.findViewById(R.id.title_edit_text);
+        bodyEditText = view.findViewById(R.id.body_edit_text);
+        createdTextView = view.findViewById(R.id.created_text_view);
 
-            view.findViewById(R.id.created_change_button).setOnClickListener(v -> changeNoteCreated());
+        Button saveChangesButton = view.findViewById(R.id.save_button);
+        saveChangesButton.setOnClickListener(v -> saveChanges());
 
-            saveChangesButton.setOnClickListener(v -> {
-                saveChanges();
-                requireActivity().getSupportFragmentManager().popBackStack();
-            });
+        Button changeCreatedButton = view.findViewById(R.id.created_change_button);
+        changeCreatedButton.setOnClickListener(v -> changeNoteCreated());
+        if (noteIndex == -1) {
+            saveChangesButton.setText(R.string.action_add_note);
+        }
+    }
+
+    private void putDataToViews() {
+        if (noteIndex == -1) {
+            note = null;
+            titleEditText.setText("");
+            bodyEditText.setText("");
+            createdTextView.setText(Note.getCreatedString(calendar.getTime()));
+        } else {
+            note = Notes.NOTE_STORAGE.get(noteIndex);
+            titleEditText.setText(note.getTitle());
+            bodyEditText.setText(note.getBody());
+            createdTextView.setText(note.getCreatedString());
+            calendar.setTime(note.getCreated());
+        }
+    }
+
+    private void getDataFromViews() {
+        note.setTitle(titleEditText.getText().toString());
+        note.setBody(bodyEditText.getText().toString());
+        note.setCreated(calendar.getTime());
+    }
+
+    private void addNewNote() {
+        note = new Note();
+        Notes.NOTE_STORAGE.add(note);
+        noteIndex = Notes.NOTE_STORAGE.size() - 1;
+        Fragment targetFragment = getTargetFragment();
+        if (targetFragment != null) {
+            Intent data = new Intent();
+            data.putExtra(ARG_NOTE_INDEX, noteIndex);
+            targetFragment.onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, data);
         }
     }
 
     private void saveChanges() {
         if (noteIndex == -1) {
-            note = new Note();
+            addNewNote();
         }
-        note.setTitle(titleEditText.getText().toString());
-        note.setBody(bodyEditText.getText().toString());
-        note.setCreated(calendar.getTime());
-        if (noteIndex == -1) {
-            Notes.NOTE_STORAGE.add(note);
-            noteIndex = Notes.NOTE_STORAGE.size() - 1;
-            Fragment targetFragment = getTargetFragment();
-            if (targetFragment != null) {
-                Intent data = new Intent();
-                data.putExtra(ARG_NOTE_INDEX, noteIndex);
-                targetFragment.onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, data);
-            }
-        }
+        getDataFromViews();
+        navigation.popBackStack();
     }
 
     private void changeNoteCreated() {
