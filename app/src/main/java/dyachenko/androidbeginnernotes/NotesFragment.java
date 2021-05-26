@@ -19,9 +19,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import static dyachenko.androidbeginnernotes.NoteFragment.ARG_NOTE_INDEX;
 
 public class NotesFragment extends CommonFragment {
-
-    private static final String extraPositionKey = "EXTRA_POSITION";
-    private static final int addNoteRequestCode = 1;
+    private static final String EXTRA_POSITION_KEY = "EXTRA_POSITION";
+    private static final int ADD_NOTE_REQUEST_CODE = 1;
     private int position;
     private int positionToMove = -1;
     private RecyclerView recyclerView;
@@ -67,7 +66,7 @@ public class NotesFragment extends CommonFragment {
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        outState.putInt(extraPositionKey, position);
+        outState.putInt(EXTRA_POSITION_KEY, position);
         super.onSaveInstanceState(outState);
     }
 
@@ -75,7 +74,7 @@ public class NotesFragment extends CommonFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         if (savedInstanceState != null) {
-            position = savedInstanceState.getInt(extraPositionKey);
+            position = savedInstanceState.getInt(EXTRA_POSITION_KEY);
         }
     }
 
@@ -87,20 +86,20 @@ public class NotesFragment extends CommonFragment {
 
     private void addNote() {
         EditNoteFragment editNoteFragment = EditNoteFragment.newInstance(-1);
-        editNoteFragment.setTargetFragment(this, addNoteRequestCode);
+        editNoteFragment.setTargetFragment(this, ADD_NOTE_REQUEST_CODE);
         navigation.addFragmentToBackStack(editNoteFragment);
     }
 
     private void deleteAllNotes() {
-        if (!Notes.NOTE_STORAGE.isEmpty()) {
-            Notes.NOTE_STORAGE.clear();
+        if (!Notes.isEmpty()) {
+            Notes.clear();
             adapter.notifyDataSetChanged();
         }
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (requestCode != addNoteRequestCode) {
+        if (requestCode != ADD_NOTE_REQUEST_CODE) {
             super.onActivityResult(requestCode, resultCode, data);
             return;
         }

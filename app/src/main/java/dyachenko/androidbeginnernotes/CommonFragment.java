@@ -6,7 +6,6 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 public class CommonFragment extends Fragment {
-
     protected Navigation navigation;
 
     @Override

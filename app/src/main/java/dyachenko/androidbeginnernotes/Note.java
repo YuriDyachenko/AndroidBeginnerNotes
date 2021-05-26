@@ -7,12 +7,13 @@ import java.util.Date;
 import java.util.Locale;
 
 public class Note implements Serializable {
+    private static final String IN_DATE_PATTERN = "yyyy-MM-dd";
+    private static final String OUT_DATE_PATTERN = "dd.MM.yyyy";
     private String title;
     private String body;
     private Date created;
 
     public Note() {
-
     }
 
     public Note(String title, String body, String created) {
@@ -57,7 +58,7 @@ public class Note implements Serializable {
 
     public void setCreatedFromString(String stringDate) {
         try {
-            this.created = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(stringDate);
+            this.created = new SimpleDateFormat(IN_DATE_PATTERN, Locale.getDefault()).parse(stringDate);
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -68,6 +69,6 @@ public class Note implements Serializable {
     }
 
     public static String getCreatedString(Date created) {
-        return new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(created);
+        return new SimpleDateFormat(OUT_DATE_PATTERN, Locale.getDefault()).format(created);
     }
 }

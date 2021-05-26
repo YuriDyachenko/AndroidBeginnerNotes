@@ -8,8 +8,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Notes {
-    private static final String tagNote = "note";
-    public static final List<Note> NOTE_STORAGE = new ArrayList<>();
+    private static final String TAG_NOTE = "note";
+    private static final List<Note> NOTE_STORAGE = new ArrayList<>();
+
+    public static void add(Note note) {
+        NOTE_STORAGE.add(note);
+    }
+
+    public static Note get(int index) {
+        return NOTE_STORAGE.get(index);
+    }
+
+    public static int size() {
+        return NOTE_STORAGE.size();
+    }
+
+    public static boolean isEmpty() {
+        return NOTE_STORAGE.isEmpty();
+    }
+
+    public static void clear() {
+        NOTE_STORAGE.clear();
+    }
 
     public static int searchByPartOfTitle(String query) {
         for (int i = 0; i < NOTE_STORAGE.size(); i++) {
@@ -26,7 +46,7 @@ public abstract class Notes {
         }
         try {
             while (parser.getEventType() != XmlPullParser.END_DOCUMENT) {
-                if (parser.getEventType() == XmlPullParser.START_TAG && parser.getName().equals(tagNote)) {
+                if (parser.getEventType() == XmlPullParser.START_TAG && parser.getName().equals(TAG_NOTE)) {
                     NOTE_STORAGE.add(new Note(parser.getAttributeValue(2),
                             parser.getAttributeValue(0),
                             parser.getAttributeValue(1)));

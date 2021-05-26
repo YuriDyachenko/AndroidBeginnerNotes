@@ -18,7 +18,6 @@ import java.util.Calendar;
 import static dyachenko.androidbeginnernotes.NoteFragment.ARG_NOTE_INDEX;
 
 public class EditNoteFragment extends CommonFragment {
-
     private Note note;
     private int noteIndex;
     private EditText titleEditText;
@@ -77,7 +76,7 @@ public class EditNoteFragment extends CommonFragment {
             bodyEditText.setText("");
             createdTextView.setText(Note.getCreatedString(calendar.getTime()));
         } else {
-            note = Notes.NOTE_STORAGE.get(noteIndex);
+            note = Notes.get(noteIndex);
             titleEditText.setText(note.getTitle());
             bodyEditText.setText(note.getBody());
             createdTextView.setText(note.getCreatedString());
@@ -93,8 +92,8 @@ public class EditNoteFragment extends CommonFragment {
 
     private void addNewNote() {
         note = new Note();
-        Notes.NOTE_STORAGE.add(note);
-        noteIndex = Notes.NOTE_STORAGE.size() - 1;
+        Notes.add(note);
+        noteIndex = Notes.size() - 1;
         Fragment targetFragment = getTargetFragment();
         if (targetFragment != null) {
             Intent data = new Intent();

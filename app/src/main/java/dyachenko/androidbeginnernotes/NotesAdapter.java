@@ -9,7 +9,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> {
-
     private OnItemClickListener itemClickListener;
 
     @NonNull
@@ -22,14 +21,14 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull NotesAdapter.ViewHolder holder, int position) {
-        holder.getTitleTextView().setText(Notes.NOTE_STORAGE.get(position).getNumberedTitle(position));
-        holder.getBodyTextView().setText(Notes.NOTE_STORAGE.get(position).getBody());
-        holder.getCreatedTextView().setText(Notes.NOTE_STORAGE.get(position).getCreatedString());
+        holder.getTitleTextView().setText(Notes.get(position).getNumberedTitle(position));
+        holder.getBodyTextView().setText(Notes.get(position).getBody());
+        holder.getCreatedTextView().setText(Notes.get(position).getCreatedString());
     }
 
     @Override
     public int getItemCount() {
-        return Notes.NOTE_STORAGE.size();
+        return Notes.size();
     }
 
     public void setOnItemClickListener(OnItemClickListener itemClickListener) {
@@ -41,8 +40,9 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-
         private final TextView titleTextView;
+        private final TextView bodyTextView;
+        private final TextView createdTextView;
 
         public TextView getBodyTextView() {
             return bodyTextView;
@@ -51,9 +51,6 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
         public TextView getCreatedTextView() {
             return createdTextView;
         }
-
-        private final TextView bodyTextView;
-        private final TextView createdTextView;
 
         public TextView getTitleTextView() {
             return titleTextView;

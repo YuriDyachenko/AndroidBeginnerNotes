@@ -12,7 +12,6 @@ import androidx.fragment.app.Fragment;
 import java.util.Calendar;
 
 public class NoteFragment extends Fragment {
-
     public static final String ARG_NOTE_INDEX = "ARG_NOTE_INDEX";
     private int noteIndex;
     private TextView createdTextView;
@@ -47,8 +46,8 @@ public class NoteFragment extends Fragment {
     }
 
     private void initViews(View view) {
-        if (noteIndex < Notes.NOTE_STORAGE.size()) {
-            Note note = Notes.NOTE_STORAGE.get(noteIndex);
+        if (noteIndex < Notes.size()) {
+            Note note = Notes.get(noteIndex);
 
             TextView titleTextView = view.findViewById(R.id.title_text_view);
             titleTextView.setText(note.getTitle());
@@ -65,7 +64,7 @@ public class NoteFragment extends Fragment {
     }
 
     private void changeNoteCreated() {
-        Note note = Notes.NOTE_STORAGE.get(noteIndex);
+        Note note = Notes.get(noteIndex);
 
         DatePickerDialog.OnDateSetListener listener = (view, year, month, dayOfMonth) -> {
             calendar.set(Calendar.YEAR, year);
