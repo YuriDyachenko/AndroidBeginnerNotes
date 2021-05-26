@@ -75,14 +75,14 @@ public class NotesFragment extends CommonFragment {
     }
 
     private void deleteAllNotes() {
-        if (!Notes.isEmpty()) {
-            Notes.clear();
+        if (!NoteStorage.isEmpty()) {
+            NoteStorage.clear();
             adapter.notifyDataSetChanged();
         }
     }
 
     private void deleteNote(int position) {
-        Notes.remove(position);
+        NoteStorage.remove(position);
         adapter.notifyItemRemoved(position);
     }
 
@@ -120,7 +120,7 @@ public class NotesFragment extends CommonFragment {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                int index = Notes.searchByPartOfTitle(query.toLowerCase());
+                int index = NoteStorage.searchByPartOfTitle(query.toLowerCase());
                 if (index == -1) {
                     Toast.makeText(getActivity(), R.string.nothing_found, Toast.LENGTH_SHORT).show();
                 } else {

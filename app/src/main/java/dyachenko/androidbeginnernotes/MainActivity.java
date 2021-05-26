@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void fillNotes() {
-        Notes.fillFromXml(getResources().getXml(R.xml.notes));
+        NoteStorage.fillFromXml(getResources().getXml(R.xml.notes));
     }
 
     private void readSettings() {

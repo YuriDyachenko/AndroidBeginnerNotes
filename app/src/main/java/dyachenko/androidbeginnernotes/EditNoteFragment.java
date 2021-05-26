@@ -76,7 +76,7 @@ public class EditNoteFragment extends CommonFragment {
             bodyEditText.setText("");
             createdTextView.setText(Note.getCreatedString(calendar.getTime()));
         } else {
-            note = Notes.get(noteIndex);
+            note = NoteStorage.get(noteIndex);
             titleEditText.setText(note.getTitle());
             bodyEditText.setText(note.getBody());
             createdTextView.setText(note.getCreatedString());
@@ -92,8 +92,8 @@ public class EditNoteFragment extends CommonFragment {
 
     private void addNewNote() {
         note = new Note();
-        Notes.add(note);
-        noteIndex = Notes.size() - 1;
+        NoteStorage.add(note);
+        noteIndex = NoteStorage.size() - 1;
     }
 
     private void saveChanges() {

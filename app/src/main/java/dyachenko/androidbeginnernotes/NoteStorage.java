@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Notes {
+public abstract class NoteStorage {
     private static final String TAG_NOTE = "note";
     private static final List<Note> NOTE_STORAGE = new ArrayList<>();
 

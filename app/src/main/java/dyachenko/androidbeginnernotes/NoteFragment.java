@@ -46,8 +46,8 @@ public class NoteFragment extends Fragment {
     }
 
     private void initViews(View view) {
-        if (noteIndex < Notes.size()) {
-            Note note = Notes.get(noteIndex);
+        if (noteIndex < NoteStorage.size()) {
+            Note note = NoteStorage.get(noteIndex);
 
             TextView titleTextView = view.findViewById(R.id.title_text_view);
             titleTextView.setText(note.getTitle());
@@ -64,7 +64,7 @@ public class NoteFragment extends Fragment {
     }
 
     private void changeNoteCreated() {
-        Note note = Notes.get(noteIndex);
+        Note note = NoteStorage.get(noteIndex);
 
         DatePickerDialog.OnDateSetListener listener = (view, year, month, dayOfMonth) -> {
             calendar.set(Calendar.YEAR, year);

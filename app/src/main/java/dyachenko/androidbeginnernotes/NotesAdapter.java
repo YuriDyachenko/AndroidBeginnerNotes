@@ -27,14 +27,14 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull NotesAdapter.ViewHolder holder, int position) {
-        holder.getTitleTextView().setText(Notes.get(position).getNumberedTitle(position));
-        holder.getBodyTextView().setText(Notes.get(position).getBody());
-        holder.getCreatedTextView().setText(Notes.get(position).getCreatedString());
+        holder.getTitleTextView().setText(NoteStorage.get(position).getNumberedTitle(position));
+        holder.getBodyTextView().setText(NoteStorage.get(position).getBody());
+        holder.getCreatedTextView().setText(NoteStorage.get(position).getCreatedString());
     }
 
     @Override
     public int getItemCount() {
-        return Notes.size();
+        return NoteStorage.size();
     }
 
     public int getPositionForPopupMenu() {
