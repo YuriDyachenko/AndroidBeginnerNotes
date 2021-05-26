@@ -105,7 +105,14 @@ public class NotesFragment extends CommonFragment {
         }
         if (resultCode == Activity.RESULT_OK && data != null) {
             positionToMove = data.getIntExtra(ARG_NOTE_INDEX, 0);
-            adapter.notifyItemInserted(positionToMove);
+
+            /*
+             * при повороте экрана, если мы внутри добавления заметки, здесь адаптер почему-то
+             * получается null, добавлю проверку пока
+             */
+            if (adapter != null) {
+                adapter.notifyItemInserted(positionToMove);
+            }
         }
     }
 
