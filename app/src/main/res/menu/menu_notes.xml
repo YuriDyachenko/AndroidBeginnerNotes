@@ -19,5 +19,5 @@
         android:id="@+id/action_clear"
         android:icon="@android:drawable/ic_menu_close_clear_cancel"
         android:title="@string/action_clear"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="never" />
 </menu>

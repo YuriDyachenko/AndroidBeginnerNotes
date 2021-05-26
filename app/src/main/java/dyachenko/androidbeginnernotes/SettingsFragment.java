@@ -21,11 +21,11 @@ public class SettingsFragment extends CommonFragment {
     }
 
     private void initViews(View view) {
-        CheckBox checkBox = view.findViewById(R.id.edit_note_via_popup_checkbox);
-        checkBox.setChecked(Settings.editNoteViaEditor);
+        CheckBox checkBox = view.findViewById(R.id.show_note_in_editor_checkbox);
+        checkBox.setChecked(Settings.showNoteInEditor);
 
         view.findViewById(R.id.settings_apply_button).setOnClickListener(v -> {
-            Settings.editNoteViaEditor = checkBox.isChecked();
+            Settings.showNoteInEditor = checkBox.isChecked();
             writeSettings();
             navigation.popBackStack();
         });
@@ -34,7 +34,7 @@ public class SettingsFragment extends CommonFragment {
     private void writeSettings() {
         requireActivity().getSharedPreferences(Settings.PREFERENCE_NAME, Context.MODE_PRIVATE)
                 .edit()
-                .putBoolean(Settings.EDIT_NOTE_VIA_EDITOR, Settings.editNoteViaEditor)
+                .putBoolean(Settings.SHOW_NOTE_IN_EDITOR, Settings.showNoteInEditor)
                 .apply();
     }
 }

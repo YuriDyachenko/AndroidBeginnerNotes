@@ -40,8 +40,8 @@ public class MainActivity extends AppCompatActivity {
     private void readSettings() {
         SharedPreferences sharedPreferences = getSharedPreferences(Settings.PREFERENCE_NAME,
                 Context.MODE_PRIVATE);
-        Settings.editNoteViaEditor = sharedPreferences
-                .getBoolean(Settings.EDIT_NOTE_VIA_EDITOR, false);
+        Settings.showNoteInEditor = sharedPreferences
+                .getBoolean(Settings.SHOW_NOTE_IN_EDITOR, false);
     }
 
     private void initViews() {

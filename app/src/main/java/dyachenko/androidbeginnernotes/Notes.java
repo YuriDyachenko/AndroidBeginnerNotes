@@ -31,6 +31,10 @@ public abstract class Notes {
         NOTE_STORAGE.clear();
     }
 
+    public static void remove(int index) {
+        NOTE_STORAGE.remove(index);
+    }
+
     public static int searchByPartOfTitle(String query) {
         for (int i = 0; i < NOTE_STORAGE.size(); i++) {
             if (NOTE_STORAGE.get(i).getTitle().toLowerCase().contains(query)) {

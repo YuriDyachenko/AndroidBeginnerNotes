@@ -94,12 +94,6 @@ public class EditNoteFragment extends CommonFragment {
         note = new Note();
         Notes.add(note);
         noteIndex = Notes.size() - 1;
-        Fragment targetFragment = getTargetFragment();
-        if (targetFragment != null) {
-            Intent data = new Intent();
-            data.putExtra(ARG_NOTE_INDEX, noteIndex);
-            targetFragment.onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, data);
-        }
     }
 
     private void saveChanges() {
@@ -107,6 +101,12 @@ public class EditNoteFragment extends CommonFragment {
             addNewNote();
         }
         getDataFromViews();
+        Fragment targetFragment = getTargetFragment();
+        if (targetFragment != null) {
+            Intent data = new Intent();
+            data.putExtra(ARG_NOTE_INDEX, noteIndex);
+            targetFragment.onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, data);
+        }
         navigation.popBackStack();
     }
 

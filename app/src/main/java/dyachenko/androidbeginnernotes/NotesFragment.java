@@ -3,6 +3,7 @@ package dyachenko.androidbeginnernotes;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -14,14 +15,14 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import static dyachenko.androidbeginnernotes.NoteFragment.ARG_NOTE_INDEX;
 
 public class NotesFragment extends CommonFragment {
-    private static final String EXTRA_POSITION_KEY = "EXTRA_POSITION";
     private static final int ADD_NOTE_REQUEST_CODE = 1;
-    private int position;
+    private static final int EDIT_NOTE_REQUEST_CODE = 2;
     private int positionToMove = -1;
     private RecyclerView recyclerView;
     private NotesAdapter adapter;
@@ -41,15 +42,10 @@ public class NotesFragment extends CommonFragment {
     private void initRecyclerView(View view) {
         recyclerView = view.findViewById(R.id.recycler_view_lines);
         recyclerView.setHasFixedSize(true);
-        adapter = new NotesAdapter();
+        adapter = new NotesAdapter(this);
         recyclerView.setAdapter(adapter);
 
         moveToPosition();
-
-        adapter.setOnItemClickListener((view1, index) -> {
-            position = index;
-            showNoteDetails();
-        });
     }
 
     private void moveToPosition() {
@@ -64,30 +60,18 @@ public class NotesFragment extends CommonFragment {
         super.onViewCreated(view, savedInstanceState);
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        outState.putInt(EXTRA_POSITION_KEY, position);
-        super.onSaveInstanceState(outState);
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        if (savedInstanceState != null) {
-            position = savedInstanceState.getInt(EXTRA_POSITION_KEY);
-        }
-    }
-
-    private void showNoteDetails() {
-        navigation.addFragmentToBackStack(Settings.editNoteViaEditor
-                ? EditNoteFragment.newInstance(position)
-                : NoteFragment.newInstance(position));
-    }
-
     private void addNote() {
         EditNoteFragment editNoteFragment = EditNoteFragment.newInstance(-1);
         editNoteFragment.setTargetFragment(this, ADD_NOTE_REQUEST_CODE);
         navigation.addFragmentToBackStack(editNoteFragment);
+    }
+
+    private void editNote(int position, boolean forceEdit) {
+        Fragment fragment = (forceEdit || Settings.showNoteInEditor)
+                ? EditNoteFragment.newInstance(position)
+                : NoteFragment.newInstance(position);
+        fragment.setTargetFragment(this, EDIT_NOTE_REQUEST_CODE);
+        navigation.addFragmentToBackStack(fragment);
     }
 
     private void deleteAllNotes() {
@@ -97,13 +81,19 @@ public class NotesFragment extends CommonFragment {
         }
     }
 
+    private void deleteNote(int position) {
+        Notes.remove(position);
+        adapter.notifyItemRemoved(position);
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (requestCode != ADD_NOTE_REQUEST_CODE) {
+        if ((requestCode != ADD_NOTE_REQUEST_CODE)
+                && (requestCode != EDIT_NOTE_REQUEST_CODE)) {
             super.onActivityResult(requestCode, resultCode, data);
             return;
         }
-        if (resultCode == Activity.RESULT_OK && data != null) {
+        if ((resultCode == Activity.RESULT_OK) && (data != null)) {
             positionToMove = data.getIntExtra(ARG_NOTE_INDEX, 0);
 
             /*
@@ -111,7 +101,11 @@ public class NotesFragment extends CommonFragment {
              * получается null, добавлю проверку пока
              */
             if (adapter != null) {
-                adapter.notifyItemInserted(positionToMove);
+                if (requestCode == ADD_NOTE_REQUEST_CODE) {
+                    adapter.notifyItemInserted(positionToMove);
+                } else {
+                    adapter.notifyItemChanged(positionToMove);
+                }
             }
         }
     }
@@ -130,8 +124,7 @@ public class NotesFragment extends CommonFragment {
                 if (index == -1) {
                     Toast.makeText(getActivity(), R.string.nothing_found, Toast.LENGTH_SHORT).show();
                 } else {
-                    position = index;
-                    showNoteDetails();
+                    doAction(R.id.action_edit_note, index, false);
                 }
                 return true;
             }
@@ -147,13 +140,13 @@ public class NotesFragment extends CommonFragment {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (doAction(item.getItemId())) {
+        if (doAction(item.getItemId(), 0, true)) {
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private boolean doAction(int id) {
+    private boolean doAction(int id, int position, boolean forceEdit) {
         if (id == R.id.action_add_note) {
             addNote();
             return true;
@@ -162,6 +155,33 @@ public class NotesFragment extends CommonFragment {
             deleteAllNotes();
             return true;
         }
+        if (id == R.id.action_delete_note) {
+            deleteNote(position);
+            return true;
+        }
+        if (id == R.id.action_edit_note) {
+            editNote(position, forceEdit);
+            return true;
+        }
         return false;
+    }
+
+    @Override
+    public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v, @Nullable ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        MenuInflater inflater = requireActivity().getMenuInflater();
+        inflater.inflate(R.menu.menu_note_popup, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(@NonNull MenuItem item) {
+        int position = adapter.getPositionForPopupMenu();
+        if (position != -1) {
+            adapter.clearPositionForPopupMenu();
+            if (doAction(item.getItemId(), position, true)) {
+                return true;
+            }
+        }
+        return super.onContextItemSelected(item);
     }
 }

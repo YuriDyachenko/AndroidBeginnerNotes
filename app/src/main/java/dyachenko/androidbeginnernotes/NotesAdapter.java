@@ -6,10 +6,16 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> {
-    private OnItemClickListener itemClickListener;
+    private final Fragment fragment;
+    private int positionForPopupMenu = -1;
+
+    public NotesAdapter(Fragment fragment) {
+        this.fragment = fragment;
+    }
 
     @NonNull
     @Override
@@ -31,12 +37,12 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
         return Notes.size();
     }
 
-    public void setOnItemClickListener(OnItemClickListener itemClickListener) {
-        this.itemClickListener = itemClickListener;
+    public int getPositionForPopupMenu() {
+        return positionForPopupMenu;
     }
 
-    public interface OnItemClickListener {
-        void onItemClick(View view, int index);
+    public void clearPositionForPopupMenu() {
+        positionForPopupMenu = -1;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -58,15 +64,22 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
+
             titleTextView = itemView.findViewById(R.id.item_title_text_view);
             bodyTextView = itemView.findViewById(R.id.item_body_text_view);
             createdTextView = itemView.findViewById(R.id.item_created_text_view);
 
-            itemView.setOnClickListener(v -> {
-                if (itemClickListener != null) {
-                    itemClickListener.onItemClick(v, getAdapterPosition());
-                }
-            });
+            registerContextMenu(itemView);
+        }
+
+        private void registerContextMenu(@NonNull View itemView) {
+            if (fragment != null) {
+                itemView.setOnClickListener(v -> {
+                    positionForPopupMenu = getLayoutPosition();
+                    itemView.showContextMenu();
+                });
+                fragment.registerForContextMenu(itemView);
+            }
         }
     }
 }
