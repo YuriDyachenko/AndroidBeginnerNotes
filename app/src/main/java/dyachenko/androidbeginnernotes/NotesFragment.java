@@ -15,7 +15,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import static dyachenko.androidbeginnernotes.NoteFragment.ARG_NOTE_INDEX;
@@ -44,7 +43,6 @@ public class NotesFragment extends CommonFragment {
         recyclerView.setHasFixedSize(true);
         adapter = new NotesAdapter(this);
         recyclerView.setAdapter(adapter);
-
         moveToPosition();
     }
 
@@ -61,17 +59,14 @@ public class NotesFragment extends CommonFragment {
     }
 
     private void addNote() {
-        EditNoteFragment editNoteFragment = EditNoteFragment.newInstance(-1);
-        editNoteFragment.setTargetFragment(this, ADD_NOTE_REQUEST_CODE);
-        navigation.addFragmentToBackStack(editNoteFragment);
+        navigation.addFragmentToBackStackForResult(EditNoteFragment.newInstance(-1),
+                this, ADD_NOTE_REQUEST_CODE);
     }
 
     private void editNote(int position, boolean forceEdit) {
-        Fragment fragment = (forceEdit || Settings.showNoteInEditor)
+        navigation.addFragmentToBackStackForResult(forceEdit || Settings.showNoteInEditor
                 ? EditNoteFragment.newInstance(position)
-                : NoteFragment.newInstance(position);
-        fragment.setTargetFragment(this, EDIT_NOTE_REQUEST_CODE);
-        navigation.addFragmentToBackStack(fragment);
+                : NoteFragment.newInstance(position), this, EDIT_NOTE_REQUEST_CODE);
     }
 
     private void deleteAllNotes() {
@@ -97,7 +92,7 @@ public class NotesFragment extends CommonFragment {
             positionToMove = data.getIntExtra(ARG_NOTE_INDEX, 0);
 
             /*
-             * при повороте экрана, если мы внутри добавления заметки, здесь адаптер почему-то
+             * при повороте экрана, если мы внутри добавления заметки, здесь адаптер "почему-то"
              * получается null, добавлю проверку пока
              */
             if (adapter != null) {
@@ -112,21 +107,14 @@ public class NotesFragment extends CommonFragment {
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        requireActivity().getMenuInflater().inflate(R.menu.menu_notes, menu);
+        inflater.inflate(R.menu.menu_notes, menu);
 
-        MenuItem searchItem = menu.findItem(R.id.action_search);
-        SearchView searchView = (SearchView) searchItem.getActionView();
+        SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                int index = NoteStorage.searchByPartOfTitle(query.toLowerCase());
-                if (index == -1) {
-                    Toast.makeText(getActivity(), R.string.nothing_found, Toast.LENGTH_SHORT).show();
-                } else {
-                    doAction(R.id.action_edit_note, index, false);
-                }
-                return true;
+                return findNote(query);
             }
 
             @Override
@@ -136,6 +124,16 @@ public class NotesFragment extends CommonFragment {
         });
 
         super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    private boolean findNote(String query) {
+        int index = NoteStorage.searchByPartOfTitle(query.toLowerCase());
+        if (index == -1) {
+            Toast.makeText(getActivity(), R.string.nothing_found, Toast.LENGTH_SHORT).show();
+        } else {
+            doAction(R.id.action_edit_note, index, false);
+        }
+        return true;
     }
 
     @Override

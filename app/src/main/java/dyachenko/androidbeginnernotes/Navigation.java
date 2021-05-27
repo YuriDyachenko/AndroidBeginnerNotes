@@ -34,6 +34,11 @@ public class Navigation {
         addFragment(fragment, true);
     }
 
+    public void addFragmentToBackStackForResult(Fragment fragment, Fragment targetFragment, int requestCode) {
+        fragment.setTargetFragment(targetFragment, requestCode);
+        addFragment(fragment, true);
+    }
+
     public void addFragmentToBackStackOnce(Fragment fragment) {
         Fragment visibleFragment = getVisibleFragment();
         if (visibleFragment != null && visibleFragment.getClass() == fragment.getClass()) {
