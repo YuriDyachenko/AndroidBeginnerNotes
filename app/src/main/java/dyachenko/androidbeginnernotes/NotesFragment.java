@@ -1,6 +1,9 @@
 package dyachenko.androidbeginnernotes;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -10,14 +13,18 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class NotesFragment extends Fragment {
+import static dyachenko.androidbeginnernotes.NoteFragment.ARG_NOTE_INDEX;
 
-    private static final String EXTRA_POSITION = "EXTRA_POSITION";
-    private int position;
+public class NotesFragment extends CommonFragment {
+    private static final int ADD_NOTE_REQUEST_CODE = 1;
+    private static final int EDIT_NOTE_REQUEST_CODE = 2;
+    private int positionToMove = -1;
+    private RecyclerView recyclerView;
+    private NotesAdapter adapter;
 
     public NotesFragment() {
     }
@@ -32,15 +39,18 @@ public class NotesFragment extends Fragment {
     }
 
     private void initRecyclerView(View view) {
-        RecyclerView recyclerView = view.findViewById(R.id.recycler_view_lines);
+        recyclerView = view.findViewById(R.id.recycler_view_lines);
         recyclerView.setHasFixedSize(true);
-        NotesAdapter adapter = new NotesAdapter();
+        adapter = new NotesAdapter(this);
         recyclerView.setAdapter(adapter);
+        moveToPosition();
+    }
 
-        adapter.setOnItemClickListener((view1, index) -> {
-            position = index;
-            showNoteDetails();
-        });
+    private void moveToPosition() {
+        if (positionToMove != -1) {
+            recyclerView.smoothScrollToPosition(positionToMove);
+            positionToMove = -1;
+        }
     }
 
     @Override
@@ -48,49 +58,63 @@ public class NotesFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        outState.putInt(EXTRA_POSITION, position);
-        super.onSaveInstanceState(outState);
+    private void addNote() {
+        navigation.addFragmentToBackStackForResult(EditNoteFragment.newInstance(-1),
+                this, ADD_NOTE_REQUEST_CODE);
     }
 
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    private void editNote(int position, boolean forceEdit) {
+        navigation.addFragmentToBackStackForResult(forceEdit || Settings.showNoteInEditor
+                ? EditNoteFragment.newInstance(position)
+                : NoteFragment.newInstance(position), this, EDIT_NOTE_REQUEST_CODE);
+    }
 
-        if (savedInstanceState != null) {
-            position = savedInstanceState.getInt(EXTRA_POSITION);
+    private void deleteAllNotes() {
+        if (!NoteStorage.isEmpty()) {
+            NoteStorage.clear();
+            adapter.notifyDataSetChanged();
         }
     }
 
-    private void showNoteDetails() {
-        requireActivity().getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.notes_fragment_container, Settings.editNoteViaEditor
-                        ? EditNoteFragment.newInstance(position)
-                        : NoteFragment.newInstance(position))
-                .addToBackStack(null)
-                .commit();
+    private void deleteNote(int position) {
+        NoteStorage.remove(position);
+        adapter.notifyItemRemoved(position);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if ((requestCode != ADD_NOTE_REQUEST_CODE)
+                && (requestCode != EDIT_NOTE_REQUEST_CODE)) {
+            super.onActivityResult(requestCode, resultCode, data);
+            return;
+        }
+        if ((resultCode == Activity.RESULT_OK) && (data != null)) {
+            positionToMove = data.getIntExtra(ARG_NOTE_INDEX, 0);
+
+            /*
+             * при повороте экрана, если мы внутри добавления заметки, здесь адаптер "почему-то"
+             * получается null, добавлю проверку пока
+             */
+            if (adapter != null) {
+                if (requestCode == ADD_NOTE_REQUEST_CODE) {
+                    adapter.notifyItemInserted(positionToMove);
+                } else {
+                    adapter.notifyItemChanged(positionToMove);
+                }
+            }
+        }
     }
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        requireActivity().getMenuInflater().inflate(R.menu.menu_search, menu);
+        inflater.inflate(R.menu.menu_notes, menu);
 
-        MenuItem searchItem = menu.findItem(R.id.action_search);
-        SearchView searchView = (SearchView) searchItem.getActionView();
+        SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                int index = Notes.searchByPartOfTitle(query.toLowerCase());
-                if (index == -1) {
-                    Toast.makeText(getActivity(), R.string.nothing_found, Toast.LENGTH_SHORT).show();
-                } else {
-                    position = index;
-                    showNoteDetails();
-                }
-                return true;
+                return findNote(query);
             }
 
             @Override
@@ -100,5 +124,62 @@ public class NotesFragment extends Fragment {
         });
 
         super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    private boolean findNote(String query) {
+        int index = NoteStorage.searchByPartOfTitle(query.toLowerCase());
+        if (index == -1) {
+            Toast.makeText(getActivity(), R.string.nothing_found, Toast.LENGTH_SHORT).show();
+        } else {
+            doAction(R.id.action_edit_note, index, false);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (doAction(item.getItemId(), 0, true)) {
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private boolean doAction(int id, int position, boolean forceEdit) {
+        if (id == R.id.action_add_note) {
+            addNote();
+            return true;
+        }
+        if (id == R.id.action_clear) {
+            deleteAllNotes();
+            return true;
+        }
+        if (id == R.id.action_delete_note) {
+            deleteNote(position);
+            return true;
+        }
+        if (id == R.id.action_edit_note) {
+            editNote(position, forceEdit);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v, @Nullable ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        MenuInflater inflater = requireActivity().getMenuInflater();
+        inflater.inflate(R.menu.menu_note_popup, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(@NonNull MenuItem item) {
+        int position = adapter.getPositionForPopupMenu();
+        if (position != -1) {
+            adapter.clearPositionForPopupMenu();
+            if (doAction(item.getItemId(), position, true)) {
+                return true;
+            }
+        }
+        return super.onContextItemSelected(item);
     }
 }

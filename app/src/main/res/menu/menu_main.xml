@@ -6,11 +6,11 @@
         android:id="@+id/action_about"
         android:icon="@android:drawable/ic_dialog_info"
         android:title="@string/action_about"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="never" />
 
     <item
         android:id="@+id/action_settings"
         android:icon="@android:drawable/ic_menu_preferences"
         android:title="@string/action_settings"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="never" />
 </menu>
