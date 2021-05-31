@@ -16,7 +16,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.google.android.material.navigation.NavigationView;
 
 public class MainActivity extends AppCompatActivity {
-    private Navigation navigation;
+    private NotesApplication application;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,17 +24,17 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         initNavigation();
         readSettings();
-        fillNotes();
         initViews();
         initStartFragment(savedInstanceState);
     }
 
     private void initNavigation() {
-        navigation = new Navigation(getSupportFragmentManager());
-    }
-
-    private void fillNotes() {
-        NoteStorage.fillFromXml(getResources().getXml(R.xml.notes));
+        /*
+         * каждый раз, когда активити пересоздается, у нее уже новый FragmentManager
+         * поэтому придется обновить навигацию (по сути, его хранящую)
+         */
+        application = (NotesApplication) getApplication();
+        application.setNavigation(new Navigation(getSupportFragmentManager()));
     }
 
     private void readSettings() {
@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void initStartFragment(Bundle savedInstanceState) {
         if (savedInstanceState == null) {
-            getNavigation().addFragment(new NotesFragment());
+            application.getNavigation().addFragment(new NotesFragment());
         }
     }
 
@@ -95,17 +95,13 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean doAction(int id) {
         if (id == R.id.action_about) {
-            getNavigation().addFragmentToBackStackOnce(new AboutFragment());
+            application.getNavigation().addFragmentToBackStackOnce(new AboutFragment());
             return true;
         }
         if (id == R.id.action_settings) {
-            getNavigation().addFragmentToBackStackOnce(new SettingsFragment());
+            application.getNavigation().addFragmentToBackStackOnce(new SettingsFragment());
             return true;
         }
         return false;
-    }
-
-    public Navigation getNavigation() {
-        return navigation;
     }
 }

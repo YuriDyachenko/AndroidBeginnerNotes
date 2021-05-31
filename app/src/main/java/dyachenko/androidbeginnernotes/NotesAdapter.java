@@ -12,9 +12,15 @@ import androidx.recyclerview.widget.RecyclerView;
 public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> {
     private final Fragment fragment;
     private int positionForPopupMenu = -1;
+    private NotesSource notesSource;
 
     public NotesAdapter(Fragment fragment) {
         this.fragment = fragment;
+    }
+
+    public void setNotesSource(NotesSource notesSource) {
+        this.notesSource = notesSource;
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -27,14 +33,15 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull NotesAdapter.ViewHolder holder, int position) {
-        holder.getTitleTextView().setText(NoteStorage.get(position).getNumberedTitle(position));
-        holder.getBodyTextView().setText(NoteStorage.get(position).getBody());
-        holder.getCreatedTextView().setText(NoteStorage.get(position).getCreatedString());
+        Note note = notesSource.get(position);
+        holder.getTitleTextView().setText(note.getTitle());
+        holder.getBodyTextView().setText(note.getBody());
+        holder.getCreatedTextView().setText(note.getCreatedString());
     }
 
     @Override
     public int getItemCount() {
-        return NoteStorage.size();
+        return notesSource.size();
     }
 
     public int getPositionForPopupMenu() {

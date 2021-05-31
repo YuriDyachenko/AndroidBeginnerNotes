@@ -27,7 +27,7 @@ public class SettingsFragment extends CommonFragment {
         view.findViewById(R.id.settings_apply_button).setOnClickListener(v -> {
             Settings.showNoteInEditor = checkBox.isChecked();
             writeSettings();
-            navigation.popBackStack();
+            application.getNavigation().popBackStack();
         });
     }
 

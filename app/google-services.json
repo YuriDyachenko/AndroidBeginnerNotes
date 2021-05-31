@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1045749661226",
+    "project_id": "beginner-notes",
+    "storage_bucket": "beginner-notes.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1045749661226:android:20e8c0dbd9a92528090d53",
+        "android_client_info": {
+          "package_name": "dyachenko.androidbeginnernotes"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1045749661226-va489sldig5qepnft8mk6b0t6ntj1nm4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCii2utc0aU5X9PC8SlabhP-317fyzrL3c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1045749661226-va489sldig5qepnft8mk6b0t6ntj1nm4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,7 +1,5 @@
 package dyachenko.androidbeginnernotes;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -17,14 +15,12 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import static dyachenko.androidbeginnernotes.NoteFragment.ARG_NOTE_INDEX;
-
 public class NotesFragment extends CommonFragment {
-    private static final int ADD_NOTE_REQUEST_CODE = 1;
-    private static final int EDIT_NOTE_REQUEST_CODE = 2;
     private int positionToMove = -1;
     private RecyclerView recyclerView;
     private NotesAdapter adapter;
+    private NotesSource notesSource;
+    private NotesSourceResponse notesSourceResponseRedraw;
 
     public NotesFragment() {
     }
@@ -42,6 +38,11 @@ public class NotesFragment extends CommonFragment {
         recyclerView = view.findViewById(R.id.recycler_view_lines);
         recyclerView.setHasFixedSize(true);
         adapter = new NotesAdapter(this);
+
+        notesSourceResponseRedraw = (NotesSourceResponse) notesSource -> adapter.notifyDataSetChanged();
+        notesSource = application.getFirebase().init(notesSourceResponseRedraw);
+        adapter.setNotesSource(notesSource);
+
         recyclerView.setAdapter(adapter);
         moveToPosition();
     }
@@ -59,50 +60,23 @@ public class NotesFragment extends CommonFragment {
     }
 
     private void addNote() {
-        navigation.addFragmentToBackStackForResult(EditNoteFragment.newInstance(-1),
-                this, ADD_NOTE_REQUEST_CODE);
+        application.getNavigation().addFragmentToBackStack(NoteFragment.newInstance(-1,
+                notesSourceResponseRedraw));
     }
 
-    private void editNote(int position, boolean forceEdit) {
-        navigation.addFragmentToBackStackForResult(forceEdit || Settings.showNoteInEditor
-                ? EditNoteFragment.newInstance(position)
-                : NoteFragment.newInstance(position), this, EDIT_NOTE_REQUEST_CODE);
+    private void editNote(int position) {
+        application.getNavigation().addFragmentToBackStack(NoteFragment.newInstance(position,
+                notesSourceResponseRedraw));
     }
 
     private void deleteAllNotes() {
-        if (!NoteStorage.isEmpty()) {
-            NoteStorage.clear();
-            adapter.notifyDataSetChanged();
+        if (!notesSource.isEmpty()) {
+            notesSource.clear(notesSourceResponseRedraw);
         }
     }
 
     private void deleteNote(int position) {
-        NoteStorage.remove(position);
-        adapter.notifyItemRemoved(position);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if ((requestCode != ADD_NOTE_REQUEST_CODE)
-                && (requestCode != EDIT_NOTE_REQUEST_CODE)) {
-            super.onActivityResult(requestCode, resultCode, data);
-            return;
-        }
-        if ((resultCode == Activity.RESULT_OK) && (data != null)) {
-            positionToMove = data.getIntExtra(ARG_NOTE_INDEX, 0);
-
-            /*
-             * при повороте экрана, если мы внутри добавления заметки, здесь адаптер "почему-то"
-             * получается null, добавлю проверку пока
-             */
-            if (adapter != null) {
-                if (requestCode == ADD_NOTE_REQUEST_CODE) {
-                    adapter.notifyItemInserted(positionToMove);
-                } else {
-                    adapter.notifyItemChanged(positionToMove);
-                }
-            }
-        }
+        notesSource.remove(position, notesSourceResponseRedraw);
     }
 
     @Override
@@ -127,24 +101,24 @@ public class NotesFragment extends CommonFragment {
     }
 
     private boolean findNote(String query) {
-        int index = NoteStorage.searchByPartOfTitle(query.toLowerCase());
+        int index = notesSource.searchByPartOfTitle(query.toLowerCase());
         if (index == -1) {
             Toast.makeText(getActivity(), R.string.nothing_found, Toast.LENGTH_SHORT).show();
         } else {
-            doAction(R.id.action_edit_note, index, false);
+            doAction(R.id.action_edit_note, index);
         }
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (doAction(item.getItemId(), 0, true)) {
+        if (doAction(item.getItemId(), 0)) {
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private boolean doAction(int id, int position, boolean forceEdit) {
+    private boolean doAction(int id, int position) {
         if (id == R.id.action_add_note) {
             addNote();
             return true;
@@ -158,7 +132,7 @@ public class NotesFragment extends CommonFragment {
             return true;
         }
         if (id == R.id.action_edit_note) {
-            editNote(position, forceEdit);
+            editNote(position);
             return true;
         }
         return false;
@@ -176,7 +150,7 @@ public class NotesFragment extends CommonFragment {
         int position = adapter.getPositionForPopupMenu();
         if (position != -1) {
             adapter.clearPositionForPopupMenu();
-            if (doAction(item.getItemId(), position, true)) {
+            if (doAction(item.getItemId(), position)) {
                 return true;
             }
         }
