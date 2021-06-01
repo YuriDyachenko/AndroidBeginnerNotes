@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void initStartFragment(Bundle savedInstanceState) {
         if (savedInstanceState == null) {
-            application.getNavigation().addFragment(new NotesFragment());
+            application.getNavigation().addFragment(new StartFragment());
         }
     }
 
