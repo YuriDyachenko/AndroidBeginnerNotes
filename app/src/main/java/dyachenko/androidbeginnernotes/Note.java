@@ -12,8 +12,15 @@ public class Note implements Serializable {
     private String title;
     private String body;
     private Date created;
+    private String id;
 
     public Note() {
+    }
+
+    public Note(String title, String body, Date created) {
+        this.title = title;
+        this.body = body;
+        this.created = created;
     }
 
     public Note(String title, String body, String created) {
@@ -22,12 +29,16 @@ public class Note implements Serializable {
         setCreatedFromString(created);
     }
 
-    public String getTitle() {
-        return title;
+    public String getId() {
+        return id;
     }
 
-    public String getNumberedTitle(int index) {
-        return (index + 1) + ". " + getTitle();
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
     }
 
     public void setTitle(String title) {
