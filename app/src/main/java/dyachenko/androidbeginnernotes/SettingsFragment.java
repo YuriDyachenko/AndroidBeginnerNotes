@@ -21,11 +21,11 @@ public class SettingsFragment extends CommonFragment {
     }
 
     private void initViews(View view) {
-        CheckBox checkBox = view.findViewById(R.id.show_note_in_editor_checkbox);
-        checkBox.setChecked(Settings.showNoteInEditor);
+        CheckBox checkBox = view.findViewById(R.id.use_google_auth_checkbox);
+        checkBox.setChecked(Settings.useGoogleAuth);
 
         view.findViewById(R.id.settings_apply_button).setOnClickListener(v -> {
-            Settings.showNoteInEditor = checkBox.isChecked();
+            Settings.useGoogleAuth = checkBox.isChecked();
             writeSettings();
             application.getNavigation().popBackStack();
         });
@@ -34,7 +34,7 @@ public class SettingsFragment extends CommonFragment {
     private void writeSettings() {
         requireActivity().getSharedPreferences(Settings.PREFERENCE_NAME, Context.MODE_PRIVATE)
                 .edit()
-                .putBoolean(Settings.SHOW_NOTE_IN_EDITOR, Settings.showNoteInEditor)
+                .putBoolean(Settings.USE_GOOGLE_AUTH, Settings.useGoogleAuth)
                 .apply();
     }
 }

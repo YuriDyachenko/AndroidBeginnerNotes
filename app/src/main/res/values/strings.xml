@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Notes 1.10</string>
+    <string name="app_name">Notes 1.11</string>
     <string name="action_search">Search</string>
     <string name="action_about">About</string>
     <string name="action_settings">Settings</string>
@@ -9,7 +9,7 @@
     <string name="change_text">…</string>
     <string name="about">© Yuri Dyachenko, Geek Brains student (2021)</string>
     <string name="nothing_found">Nothing found</string>
-    <string name="show_note_in_editor">Show finded note in EDITOR</string>
+    <string name="use_google_auth_editor">Use Google Authentication</string>
     <string name="apply">Apply</string>
     <string name="save_changes">Save changes</string>
     <string name="hint_title">title:</string>

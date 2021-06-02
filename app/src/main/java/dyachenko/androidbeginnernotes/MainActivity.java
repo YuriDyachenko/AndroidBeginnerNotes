@@ -40,8 +40,8 @@ public class MainActivity extends AppCompatActivity {
     private void readSettings() {
         SharedPreferences sharedPreferences = getSharedPreferences(Settings.PREFERENCE_NAME,
                 Context.MODE_PRIVATE);
-        Settings.showNoteInEditor = sharedPreferences
-                .getBoolean(Settings.SHOW_NOTE_IN_EDITOR, false);
+        Settings.useGoogleAuth = sharedPreferences
+                .getBoolean(Settings.USE_GOOGLE_AUTH, false);
     }
 
     private void initViews() {
@@ -51,7 +51,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void initStartFragment(Bundle savedInstanceState) {
         if (savedInstanceState == null) {
-            application.getNavigation().addFragment(new StartFragment());
+            application.getNavigation().addFragment(Settings.useGoogleAuth
+                    ? new StartFragment()
+                    : new NotesFragment());
         }
     }
 

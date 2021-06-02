@@ -20,12 +20,12 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <CheckBox
-            android:id="@+id/show_note_in_editor_checkbox"
+            android:id="@+id/use_google_auth_checkbox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@color/white"
             android:padding="@dimen/edit_padding"
-            android:text="@string/show_note_in_editor"
+            android:text="@string/use_google_auth_editor"
             android:textColor="@color/purple_700"
             android:textSize="@dimen/settings_text_size" />
 
