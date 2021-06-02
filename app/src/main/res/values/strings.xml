@@ -22,4 +22,9 @@
     <string name="continue_text">continue</string>
     <string name="sign_out">sign out</string>
     <string name="no_email">\? e-mail ?</string>
+    <string name="ask">Answer the question</string>
+    <string name="delete_all_notes">Delete all notes?</string>
+    <string name="yes">YES</string>
+    <string name="no">NO</string>
+    <string name="delete_note">Delete note?</string>
 </resources>

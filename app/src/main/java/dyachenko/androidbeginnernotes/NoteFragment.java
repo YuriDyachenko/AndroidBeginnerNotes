@@ -12,8 +12,8 @@ import android.widget.TextView;
 import java.util.Calendar;
 
 public class NoteFragment extends CommonFragment {
-    public static final String ARG_NOTE_INDEX = "ARG_NOTE_INDEX";
-    public static final String ARG_NOTE_CALLBACK = "ARG_NOTE_CALLBACK";
+    private static final String ARG_NOTE_INDEX = "ARG_NOTE_INDEX";
+    private static final String ARG_NOTE_CALLBACK = "ARG_NOTE_CALLBACK";
     private Note note;
     private int noteIndex;
     private EditText titleEditText;

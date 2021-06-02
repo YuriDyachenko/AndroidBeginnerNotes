@@ -1,13 +1,11 @@
 package dyachenko.androidbeginnernotes;
 
 import java.io.Serializable;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
 public class Note implements Serializable {
-    private static final String IN_DATE_PATTERN = "yyyy-MM-dd";
     private static final String OUT_DATE_PATTERN = "dd.MM.yyyy";
     private String title;
     private String body;
@@ -21,12 +19,6 @@ public class Note implements Serializable {
         this.title = title;
         this.body = body;
         this.created = created;
-    }
-
-    public Note(String title, String body, String created) {
-        setTitle(title);
-        setBody(body);
-        setCreatedFromString(created);
     }
 
     public String getId() {
@@ -65,14 +57,6 @@ public class Note implements Serializable {
 
     public String getCreatedString() {
         return getCreatedString(getCreated());
-    }
-
-    public void setCreatedFromString(String stringDate) {
-        try {
-            this.created = new SimpleDateFormat(IN_DATE_PATTERN, Locale.getDefault()).parse(stringDate);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
     }
 
     public void setCreated(Date created) {

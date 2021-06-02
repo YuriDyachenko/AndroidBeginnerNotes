@@ -70,13 +70,21 @@ public class NotesFragment extends CommonFragment {
     }
 
     private void deleteAllNotes() {
-        if (!notesSource.isEmpty()) {
-            notesSource.clear(notesSourceResponseRedraw);
-        }
+        DialogYesNoFragment.newInstance(getString(R.string.ask), getString(R.string.delete_all_notes),
+                (DialogYesNoResponse) yes -> {
+                    if (!notesSource.isEmpty() && yes) {
+                        notesSource.clear(notesSourceResponseRedraw);
+                    }
+                }).show(application.getNavigation().getFragmentManager(), DialogYesNoFragment.YES_NO_TAG);
     }
 
     private void deleteNote(int position) {
-        notesSource.remove(position, notesSourceResponseRedraw);
+        DialogYesNoFragment.newInstance(getString(R.string.ask), getString(R.string.delete_note),
+                (DialogYesNoResponse) yes -> {
+                    if (yes) {
+                        notesSource.remove(position, notesSourceResponseRedraw);
+                    }
+                }).show(application.getNavigation().getFragmentManager(), DialogYesNoFragment.YES_NO_TAG);
     }
 
     @Override
