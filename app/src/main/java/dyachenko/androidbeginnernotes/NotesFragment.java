@@ -16,8 +16,6 @@ import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class NotesFragment extends CommonFragment {
-    private int positionToMove = -1;
-    private RecyclerView recyclerView;
     private NotesAdapter adapter;
     private NotesSource notesSource;
     private NotesSourceResponse notesSourceResponseRedraw;
@@ -35,23 +33,25 @@ public class NotesFragment extends CommonFragment {
     }
 
     private void initRecyclerView(View view) {
-        recyclerView = view.findViewById(R.id.recycler_view_lines);
+        RecyclerView recyclerView = view.findViewById(R.id.recycler_view_lines);
         recyclerView.setHasFixedSize(true);
         adapter = new NotesAdapter(this);
 
-        notesSourceResponseRedraw = (NotesSourceResponse) notesSource -> adapter.notifyDataSetChanged();
+        notesSourceResponseRedraw = new NotesSourceResponse() {
+            @Override
+            public void initialized(NotesSource notesSource) {
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void initializedRemove(NotesSource notesSource, int position) {
+                adapter.notifyItemRemoved(position);
+            }
+        };
+
         notesSource = application.getFirebase().init(notesSourceResponseRedraw);
         adapter.setNotesSource(notesSource);
-
         recyclerView.setAdapter(adapter);
-        moveToPosition();
-    }
-
-    private void moveToPosition() {
-        if (positionToMove != -1) {
-            recyclerView.smoothScrollToPosition(positionToMove);
-            positionToMove = -1;
-        }
     }
 
     @Override

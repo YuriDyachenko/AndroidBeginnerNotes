@@ -106,7 +106,7 @@ public class NotesSourceFirebase implements NotesSource {
                 .delete()
                 .addOnSuccessListener(unused -> {
                     removeFromStorageById(id);
-                    notesSourceResponse.initialized(this);
+                    notesSourceResponse.initializedRemove(this, index);
                 });
     }
 

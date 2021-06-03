@@ -9,12 +9,12 @@ import java.util.List;
 public class Navigation {
     private final FragmentManager fragmentManager;
 
-    public FragmentManager getFragmentManager() {
-        return fragmentManager;
-    }
-
     public Navigation(FragmentManager fragmentManager) {
         this.fragmentManager = fragmentManager;
+    }
+
+    public FragmentManager getFragmentManager() {
+        return fragmentManager;
     }
 
     public void popBackStack() {
