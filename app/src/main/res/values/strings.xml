@@ -27,4 +27,5 @@
     <string name="yes">YES</string>
     <string name="no">NO</string>
     <string name="delete_note">Delete note?</string>
+    <string name="use_yes_no_fragment">Use YES/NO Fragment</string>
 </resources>

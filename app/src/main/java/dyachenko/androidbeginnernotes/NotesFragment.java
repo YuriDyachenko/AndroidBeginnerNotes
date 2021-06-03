@@ -70,21 +70,43 @@ public class NotesFragment extends CommonFragment {
     }
 
     private void deleteAllNotes() {
-        DialogYesNoFragment.newInstance(getString(R.string.ask), getString(R.string.delete_all_notes),
-                (DialogYesNoResponse) yes -> {
-                    if (!notesSource.isEmpty() && yes) {
-                        notesSource.clear(notesSourceResponseRedraw);
-                    }
-                }).show(application.getNavigation().getFragmentManager(), DialogYesNoFragment.YES_NO_TAG);
+        if (!notesSource.isEmpty()) {
+            if (Settings.useYesNoFragment) {
+                application.getNavigation().addFragmentToBackStack(
+                        YesNoFragment.newInstance(getString(R.string.ask), getString(R.string.delete_all_notes),
+                                (DialogYesNoResponse) yes -> {
+                                    if (yes) {
+                                        notesSource.clear(notesSourceResponseRedraw);
+                                    }
+                                }));
+            } else {
+                DialogYesNoFragment.newInstance(getString(R.string.ask), getString(R.string.delete_all_notes),
+                        (DialogYesNoResponse) yes -> {
+                            if (yes) {
+                                notesSource.clear(notesSourceResponseRedraw);
+                            }
+                        }).show(application.getNavigation().getFragmentManager(), DialogYesNoFragment.YES_NO_TAG);
+            }
+        }
     }
 
     private void deleteNote(int position) {
-        DialogYesNoFragment.newInstance(getString(R.string.ask), getString(R.string.delete_note),
-                (DialogYesNoResponse) yes -> {
-                    if (yes) {
-                        notesSource.remove(position, notesSourceResponseRedraw);
-                    }
-                }).show(application.getNavigation().getFragmentManager(), DialogYesNoFragment.YES_NO_TAG);
+        if (Settings.useYesNoFragment) {
+            application.getNavigation().addFragmentToBackStack(
+                    YesNoFragment.newInstance(getString(R.string.ask), getString(R.string.delete_note),
+                            (DialogYesNoResponse) yes -> {
+                                if (yes) {
+                                    notesSource.remove(position, notesSourceResponseRedraw);
+                                }
+                            }));
+        } else {
+            DialogYesNoFragment.newInstance(getString(R.string.ask), getString(R.string.delete_note),
+                    (DialogYesNoResponse) yes -> {
+                        if (yes) {
+                            notesSource.remove(position, notesSourceResponseRedraw);
+                        }
+                    }).show(application.getNavigation().getFragmentManager(), DialogYesNoFragment.YES_NO_TAG);
+        }
     }
 
     @Override

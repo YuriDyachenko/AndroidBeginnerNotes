@@ -35,4 +35,5 @@
     <item name="spam_count" format="integer" type="dimen">1</item>
     <item name="item_body_lines" format="integer" type="dimen">3</item>
     <item name="item_title_lines" format="integer" type="dimen">1</item>
+    <item name="settings_alpha_100" format="float" type="dimen">1.0</item>
 </resources>

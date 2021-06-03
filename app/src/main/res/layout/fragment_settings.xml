@@ -12,6 +12,7 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="@color/white"
         android:orientation="vertical"
         android:padding="@dimen/settings_padding"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -23,9 +24,17 @@
             android:id="@+id/use_google_auth_checkbox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@color/white"
             android:padding="@dimen/edit_padding"
             android:text="@string/use_google_auth_editor"
+            android:textColor="@color/purple_700"
+            android:textSize="@dimen/settings_text_size" />
+
+        <CheckBox
+            android:id="@+id/use_yes_no_fragment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/edit_padding"
+            android:text="@string/use_yes_no_fragment"
             android:textColor="@color/purple_700"
             android:textSize="@dimen/settings_text_size" />
 
