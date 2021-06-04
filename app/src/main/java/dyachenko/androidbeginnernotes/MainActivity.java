@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
                 Context.MODE_PRIVATE);
         Settings.useGoogleAuth = sharedPreferences.getBoolean(Settings.USE_GOOGLE_AUTH, false);
         Settings.useYesNoFragment = sharedPreferences.getBoolean(Settings.USE_YES_NO_FRAGMENT, false);
+        Settings.useDialogNoteFragment = sharedPreferences.getBoolean(Settings.USE_DIALOG_NOTE_FRAGMENT, false);
     }
 
     private void initViews() {

@@ -28,4 +28,5 @@
     <string name="no">NO</string>
     <string name="delete_note">Delete note?</string>
     <string name="use_yes_no_fragment">Use YES/NO Fragment</string>
+    <string name="use_dialog_note_fragment">Use DIALOG note Fragment</string>
 </resources>

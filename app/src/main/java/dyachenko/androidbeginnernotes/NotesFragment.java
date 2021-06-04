@@ -15,6 +15,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.Date;
+
 public class NotesFragment extends CommonFragment {
     private NotesAdapter adapter;
     private NotesSource notesSource;
@@ -60,13 +62,27 @@ public class NotesFragment extends CommonFragment {
     }
 
     private void addNote() {
-        application.getNavigation().addFragmentToBackStack(NoteFragment.newInstance(-1,
-                notesSourceResponseRedraw));
+        if (Settings.useDialogNoteFragment) {
+            DialogNoteFragment.newInstance(new Note("", "", new Date()),
+                    (DialogNoteResponse) receivedNote -> notesSource.add(receivedNote, notesSourceResponseRedraw))
+                    .show(application.getNavigation().getFragmentManager(),
+                            DialogNoteFragment.DIALOG_NOTE_TAG);
+        } else {
+            application.getNavigation().addFragmentToBackStack(NoteFragment.newInstance(-1,
+                    notesSourceResponseRedraw));
+        }
     }
 
     private void editNote(int position) {
-        application.getNavigation().addFragmentToBackStack(NoteFragment.newInstance(position,
-                notesSourceResponseRedraw));
+        if (Settings.useDialogNoteFragment) {
+            DialogNoteFragment.newInstance(notesSource.get(position),
+                    (DialogNoteResponse) receivedNote -> notesSource.update(position, receivedNote, notesSourceResponseRedraw))
+                    .show(application.getNavigation().getFragmentManager(),
+                            DialogNoteFragment.DIALOG_NOTE_TAG);
+        } else {
+            application.getNavigation().addFragmentToBackStack(NoteFragment.newInstance(position,
+                    notesSourceResponseRedraw));
+        }
     }
 
     private void deleteAllNotes() {

@@ -1,7 +1,6 @@
 package dyachenko.androidbeginnernotes;
 
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -49,12 +48,9 @@ public class DialogYesNoFragment extends DialogFragment {
                     dismiss();
                     response.answered(true);
                 })
-                .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dismiss();
-                        response.answered(false);
-                    }
+                .setNegativeButton(getString(R.string.no), (dialog, which) -> {
+                    dismiss();
+                    response.answered(false);
                 });
 
         AlertDialog dialog = builder.create();

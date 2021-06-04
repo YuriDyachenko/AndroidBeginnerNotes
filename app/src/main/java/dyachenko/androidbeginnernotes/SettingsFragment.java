@@ -25,10 +25,13 @@ public class SettingsFragment extends CommonFragment {
         useGoogleAuthCheckBox.setChecked(Settings.useGoogleAuth);
         CheckBox useYesNoFragmentCheckBox = view.findViewById(R.id.use_yes_no_fragment);
         useYesNoFragmentCheckBox.setChecked(Settings.useYesNoFragment);
+        CheckBox useDialogNoteFragmentCheckBox = view.findViewById(R.id.use_dialog_note_fragment);
+        useDialogNoteFragmentCheckBox.setChecked(Settings.useDialogNoteFragment);
 
         view.findViewById(R.id.settings_apply_button).setOnClickListener(v -> {
             Settings.useGoogleAuth = useGoogleAuthCheckBox.isChecked();
             Settings.useYesNoFragment = useYesNoFragmentCheckBox.isChecked();
+            Settings.useDialogNoteFragment = useDialogNoteFragmentCheckBox.isChecked();
             writeSettings();
             application.getNavigation().popBackStack();
         });
@@ -39,6 +42,7 @@ public class SettingsFragment extends CommonFragment {
                 .edit()
                 .putBoolean(Settings.USE_GOOGLE_AUTH, Settings.useGoogleAuth)
                 .putBoolean(Settings.USE_YES_NO_FRAGMENT, Settings.useYesNoFragment)
+                .putBoolean(Settings.USE_DIALOG_NOTE_FRAGMENT, Settings.useDialogNoteFragment)
                 .apply();
     }
 }

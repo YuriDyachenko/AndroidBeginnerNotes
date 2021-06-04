@@ -38,6 +38,15 @@
             android:textColor="@color/purple_700"
             android:textSize="@dimen/settings_text_size" />
 
+        <CheckBox
+            android:id="@+id/use_dialog_note_fragment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/edit_padding"
+            android:text="@string/use_dialog_note_fragment"
+            android:textColor="@color/purple_700"
+            android:textSize="@dimen/settings_text_size" />
+
         <Button
             android:id="@+id/settings_apply_button"
             android:layout_width="wrap_content"
