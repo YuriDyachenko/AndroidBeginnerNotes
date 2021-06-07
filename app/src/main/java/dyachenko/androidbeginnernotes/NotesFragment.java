@@ -15,9 +15,9 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.Date;
+
 public class NotesFragment extends CommonFragment {
-    private int positionToMove = -1;
-    private RecyclerView recyclerView;
     private NotesAdapter adapter;
     private NotesSource notesSource;
     private NotesSourceResponse notesSourceResponseRedraw;
@@ -35,23 +35,25 @@ public class NotesFragment extends CommonFragment {
     }
 
     private void initRecyclerView(View view) {
-        recyclerView = view.findViewById(R.id.recycler_view_lines);
+        RecyclerView recyclerView = view.findViewById(R.id.recycler_view_lines);
         recyclerView.setHasFixedSize(true);
         adapter = new NotesAdapter(this);
 
-        notesSourceResponseRedraw = (NotesSourceResponse) notesSource -> adapter.notifyDataSetChanged();
+        notesSourceResponseRedraw = new NotesSourceResponse() {
+            @Override
+            public void initialized(NotesSource notesSource) {
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void initializedRemove(NotesSource notesSource, int position) {
+                adapter.notifyItemRemoved(position);
+            }
+        };
+
         notesSource = application.getFirebase().init(notesSourceResponseRedraw);
         adapter.setNotesSource(notesSource);
-
         recyclerView.setAdapter(adapter);
-        moveToPosition();
-    }
-
-    private void moveToPosition() {
-        if (positionToMove != -1) {
-            recyclerView.smoothScrollToPosition(positionToMove);
-            positionToMove = -1;
-        }
     }
 
     @Override
@@ -60,23 +62,68 @@ public class NotesFragment extends CommonFragment {
     }
 
     private void addNote() {
-        application.getNavigation().addFragmentToBackStack(NoteFragment.newInstance(-1,
-                notesSourceResponseRedraw));
+        if (Settings.useDialogNoteFragment) {
+            DialogNoteFragment.newInstance(new Note("", "", new Date()),
+                    (DialogNoteResponse) receivedNote -> notesSource.add(receivedNote, notesSourceResponseRedraw))
+                    .show(application.getNavigation().getFragmentManager(),
+                            DialogNoteFragment.DIALOG_NOTE_TAG);
+        } else {
+            application.getNavigation().addFragmentToBackStack(NoteFragment.newInstance(
+                    Note.INDEX_FOR_NEW_NOTE,
+                    notesSourceResponseRedraw));
+        }
     }
 
     private void editNote(int position) {
-        application.getNavigation().addFragmentToBackStack(NoteFragment.newInstance(position,
-                notesSourceResponseRedraw));
+        if (Settings.useDialogNoteFragment) {
+            DialogNoteFragment.newInstance(notesSource.get(position),
+                    (DialogNoteResponse) receivedNote -> notesSource.update(position, receivedNote, notesSourceResponseRedraw))
+                    .show(application.getNavigation().getFragmentManager(),
+                            DialogNoteFragment.DIALOG_NOTE_TAG);
+        } else {
+            application.getNavigation().addFragmentToBackStack(NoteFragment.newInstance(position,
+                    notesSourceResponseRedraw));
+        }
     }
 
     private void deleteAllNotes() {
         if (!notesSource.isEmpty()) {
-            notesSource.clear(notesSourceResponseRedraw);
+            if (Settings.useYesNoFragment) {
+                application.getNavigation().addFragmentToBackStack(
+                        YesNoFragment.newInstance(getString(R.string.ask), getString(R.string.delete_all_notes),
+                                (DialogYesNoResponse) yes -> {
+                                    if (yes) {
+                                        notesSource.clear(notesSourceResponseRedraw);
+                                    }
+                                }));
+            } else {
+                DialogYesNoFragment.newInstance(getString(R.string.ask), getString(R.string.delete_all_notes),
+                        (DialogYesNoResponse) yes -> {
+                            if (yes) {
+                                notesSource.clear(notesSourceResponseRedraw);
+                            }
+                        }).show(application.getNavigation().getFragmentManager(), DialogYesNoFragment.YES_NO_TAG);
+            }
         }
     }
 
     private void deleteNote(int position) {
-        notesSource.remove(position, notesSourceResponseRedraw);
+        if (Settings.useYesNoFragment) {
+            application.getNavigation().addFragmentToBackStack(
+                    YesNoFragment.newInstance(getString(R.string.ask), getString(R.string.delete_note),
+                            (DialogYesNoResponse) yes -> {
+                                if (yes) {
+                                    notesSource.remove(position, notesSourceResponseRedraw);
+                                }
+                            }));
+        } else {
+            DialogYesNoFragment.newInstance(getString(R.string.ask), getString(R.string.delete_note),
+                    (DialogYesNoResponse) yes -> {
+                        if (yes) {
+                            notesSource.remove(position, notesSourceResponseRedraw);
+                        }
+                    }).show(application.getNavigation().getFragmentManager(), DialogYesNoFragment.YES_NO_TAG);
+        }
     }
 
     @Override
@@ -102,7 +149,7 @@ public class NotesFragment extends CommonFragment {
 
     private boolean findNote(String query) {
         int index = notesSource.searchByPartOfTitle(query.toLowerCase());
-        if (index == -1) {
+        if (index == Note.INDEX_NOTE_NOT_FOUND) {
             Toast.makeText(getActivity(), R.string.nothing_found, Toast.LENGTH_SHORT).show();
         } else {
             doAction(R.id.action_edit_note, index);
@@ -148,7 +195,7 @@ public class NotesFragment extends CommonFragment {
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
         int position = adapter.getPositionForPopupMenu();
-        if (position != -1) {
+        if (position != Note.UNDEFINED_POSITION) {
             adapter.clearPositionForPopupMenu();
             if (doAction(item.getItemId(), position)) {
                 return true;

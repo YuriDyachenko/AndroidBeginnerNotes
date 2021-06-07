@@ -13,6 +13,10 @@ public class Navigation {
         this.fragmentManager = fragmentManager;
     }
 
+    public FragmentManager getFragmentManager() {
+        return fragmentManager;
+    }
+
     public void popBackStack() {
         fragmentManager.popBackStack();
     }

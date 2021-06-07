@@ -21,11 +21,17 @@ public class SettingsFragment extends CommonFragment {
     }
 
     private void initViews(View view) {
-        CheckBox checkBox = view.findViewById(R.id.show_note_in_editor_checkbox);
-        checkBox.setChecked(Settings.showNoteInEditor);
+        CheckBox useGoogleAuthCheckBox = view.findViewById(R.id.use_google_auth_checkbox);
+        useGoogleAuthCheckBox.setChecked(Settings.useGoogleAuth);
+        CheckBox useYesNoFragmentCheckBox = view.findViewById(R.id.use_yes_no_fragment);
+        useYesNoFragmentCheckBox.setChecked(Settings.useYesNoFragment);
+        CheckBox useDialogNoteFragmentCheckBox = view.findViewById(R.id.use_dialog_note_fragment);
+        useDialogNoteFragmentCheckBox.setChecked(Settings.useDialogNoteFragment);
 
         view.findViewById(R.id.settings_apply_button).setOnClickListener(v -> {
-            Settings.showNoteInEditor = checkBox.isChecked();
+            Settings.useGoogleAuth = useGoogleAuthCheckBox.isChecked();
+            Settings.useYesNoFragment = useYesNoFragmentCheckBox.isChecked();
+            Settings.useDialogNoteFragment = useDialogNoteFragmentCheckBox.isChecked();
             writeSettings();
             application.getNavigation().popBackStack();
         });
@@ -34,7 +40,9 @@ public class SettingsFragment extends CommonFragment {
     private void writeSettings() {
         requireActivity().getSharedPreferences(Settings.PREFERENCE_NAME, Context.MODE_PRIVATE)
                 .edit()
-                .putBoolean(Settings.SHOW_NOTE_IN_EDITOR, Settings.showNoteInEditor)
+                .putBoolean(Settings.USE_GOOGLE_AUTH, Settings.useGoogleAuth)
+                .putBoolean(Settings.USE_YES_NO_FRAGMENT, Settings.useYesNoFragment)
+                .putBoolean(Settings.USE_DIALOG_NOTE_FRAGMENT, Settings.useDialogNoteFragment)
                 .apply();
     }
 }

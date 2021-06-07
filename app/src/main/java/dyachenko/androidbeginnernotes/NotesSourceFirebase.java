@@ -89,12 +89,12 @@ public class NotesSourceFirebase implements NotesSource {
                 return i;
             }
         }
-        return -1;
+        return Note.INDEX_NOTE_NOT_FOUND;
     }
 
     private void removeFromStorageById(String id) {
         int index = findById(id);
-        if (index != -1) {
+        if (index != Note.INDEX_NOTE_NOT_FOUND) {
             storage.remove(index);
         }
     }
@@ -106,7 +106,7 @@ public class NotesSourceFirebase implements NotesSource {
                 .delete()
                 .addOnSuccessListener(unused -> {
                     removeFromStorageById(id);
-                    notesSourceResponse.initialized(this);
+                    notesSourceResponse.initializedRemove(this, index);
                 });
     }
 
@@ -127,6 +127,6 @@ public class NotesSourceFirebase implements NotesSource {
                 return i;
             }
         }
-        return -1;
+        return Note.INDEX_NOTE_NOT_FOUND;
     }
 }
