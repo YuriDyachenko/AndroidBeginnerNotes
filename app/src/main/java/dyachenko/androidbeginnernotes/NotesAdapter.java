@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> {
     private final Fragment fragment;
-    private int positionForPopupMenu = -1;
+    private int positionForPopupMenu = Note.UNDEFINED_POSITION;
     private NotesSource notesSource;
 
     public NotesAdapter(Fragment fragment) {
@@ -49,7 +49,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
     }
 
     public void clearPositionForPopupMenu() {
-        positionForPopupMenu = -1;
+        positionForPopupMenu = Note.UNDEFINED_POSITION;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

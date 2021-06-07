@@ -63,13 +63,13 @@ public class NoteFragment extends CommonFragment {
 
         Button changeCreatedButton = view.findViewById(R.id.created_change_button);
         changeCreatedButton.setOnClickListener(v -> changeNoteCreated());
-        if (noteIndex == -1) {
+        if (noteIndex == Note.INDEX_FOR_NEW_NOTE) {
             saveChangesButton.setText(R.string.action_add_note);
         }
     }
 
     private void putDataToViews() {
-        if (noteIndex == -1) {
+        if (noteIndex == Note.INDEX_FOR_NEW_NOTE) {
             note = null;
             titleEditText.setText("");
             bodyEditText.setText("");
@@ -90,7 +90,7 @@ public class NoteFragment extends CommonFragment {
     }
 
     private void saveChanges() {
-        boolean isAdding = (noteIndex == -1);
+        boolean isAdding = (noteIndex == Note.INDEX_FOR_NEW_NOTE);
         if (isAdding) {
             note = new Note();
         }

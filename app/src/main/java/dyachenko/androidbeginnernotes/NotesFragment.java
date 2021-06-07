@@ -68,7 +68,8 @@ public class NotesFragment extends CommonFragment {
                     .show(application.getNavigation().getFragmentManager(),
                             DialogNoteFragment.DIALOG_NOTE_TAG);
         } else {
-            application.getNavigation().addFragmentToBackStack(NoteFragment.newInstance(-1,
+            application.getNavigation().addFragmentToBackStack(NoteFragment.newInstance(
+                    Note.INDEX_FOR_NEW_NOTE,
                     notesSourceResponseRedraw));
         }
     }
@@ -148,7 +149,7 @@ public class NotesFragment extends CommonFragment {
 
     private boolean findNote(String query) {
         int index = notesSource.searchByPartOfTitle(query.toLowerCase());
-        if (index == -1) {
+        if (index == Note.INDEX_NOTE_NOT_FOUND) {
             Toast.makeText(getActivity(), R.string.nothing_found, Toast.LENGTH_SHORT).show();
         } else {
             doAction(R.id.action_edit_note, index);
@@ -194,7 +195,7 @@ public class NotesFragment extends CommonFragment {
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
         int position = adapter.getPositionForPopupMenu();
-        if (position != -1) {
+        if (position != Note.UNDEFINED_POSITION) {
             adapter.clearPositionForPopupMenu();
             if (doAction(item.getItemId(), position)) {
                 return true;

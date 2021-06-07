@@ -6,6 +6,9 @@ import java.util.Date;
 import java.util.Locale;
 
 public class Note implements Serializable {
+    public static final int INDEX_FOR_NEW_NOTE = -1;
+    public static final int INDEX_NOTE_NOT_FOUND = -1;
+    public static final int UNDEFINED_POSITION = -1;
     private static final String OUT_DATE_PATTERN = "dd.MM.yyyy";
     private String title;
     private String body;
